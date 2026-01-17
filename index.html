@@ -21,7 +21,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; transition: 1s; }
 
-        /* 制御用ラジオボタン（非表示） */
+        /* 制御用 */
         #home-radio, #news-radio, #memo-radio, #general-radio, #sidebar-check, #show-more-check { display: none !important; }
 
         /* ナビゲーション */
@@ -41,13 +41,12 @@
 
         /* ヘッダー */
         header { text-align: center; padding: 40px 20px; background: var(--bg-header); }
-        .header-controls { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 15px; }
-        .status-badge { padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
+        .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; }
         .status-on { background: #2ecc71; color: #fff; }
         .status-soon { background: #f1c40f; color: #000; }
         .status-off { background: #e74c3c; color: #fff; }
 
-        /* ページ表示切り替え */
+        /* コンテンツ表示 */
         .container { max-width: 1200px; margin: 0 auto; padding: 20px 5%; }
         .page-content { display: none; animation: fadeIn 0.4s ease; }
         #home-radio:checked ~ .container #home-page,
@@ -56,13 +55,13 @@
         #general-radio:checked ~ .container #general-page { display: block; }
 
         /* グリッドとカード */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .card { background: #1a1a1a; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: 0.3s; }
         .card img { width: 100%; border-radius: 8px; aspect-ratio: 16/9; object-fit: cover; }
         
-        .interaction-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 30px; border-radius: 15px; text-align: center; margin-top: 40px; }
-        .btn { padding: 12px 24px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600; transition: 0.2s; display: inline-block; text-decoration: none; }
-        .btn-like { background: var(--like-color); color: white; border-radius: 50px; font-size: 1.1rem; }
+        .interaction-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 30px; border-radius: 15px; margin-top: 40px; }
+        .btn { padding: 12px 24px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600; transition: 0.2s; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-like { background: var(--like-color); color: white; border-radius: 50px; }
         .btn-more { display: block; width: fit-content; margin: 30px auto; background: #333; color: #fff; }
 
         .search-hide { display: none !important; }
@@ -101,100 +100,103 @@
 
     <header>
         <div id="weather-text" style="font-size: 0.8rem; opacity: 0.6;">Weather Loading...</div>
-        <h1 id="h-title" style="font-size: 2.5rem; margin: 10px 0;">NEXT-HUB</h1>
-        <p id="h-desc" style="color:var(--text-sub);">統合型クリエイティブハブ</p>
-
-        <div class="header-controls">
-            <div id="contact-status" class="status-badge">確認中...</div>
-            <button class="btn btn-like" onclick="sendLike()">❤ いいね！ <span id="like-count">0</span></button>
-        </div>
+        <h1 style="font-size: 2.5rem; margin: 10px 0;">NEXT-HUB</h1>
+        <div id="contact-status" class="status-badge">確認中...</div>
+        <br>
+        <button class="btn btn-like" onclick="sendLike()">❤ いいね！ <span id="like-count">0</span></button>
     </header>
 
     <main class="container">
-        
         <div id="home-page" class="page-content">
             <section style="margin-bottom: 40px;">
-                <h2 style="margin-bottom:20px; border-left: 5px solid var(--scratch-blue); padding-left: 15px;">⭐ おすすめの作品</h2>
-                <div class="card" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                <h2 style="margin-bottom:20px;">⭐ おすすめの作品</h2>
+                <div class="card" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; border: 1px solid var(--scratch-blue);">
                     <img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png" style="width: 100%; max-width: 350px;">
                     <div style="flex: 1; min-width: 280px;">
-                        <span style="background: var(--scratch-blue); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">PICK UP</span>
+                        <span style="background: var(--scratch-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">PICK UP</span>
                         <h3 style="margin: 10px 0;">ブレインロット クリッカー</h3>
-                        <p style="color: var(--text-sub); margin-bottom: 15px;">いま話題のクリッカーゲーム。中毒性抜群の演出をチェックしよう！</p>
-                        <a href="https://scratch.mit.edu/projects/1259915297/" class="btn" style="background: var(--scratch-blue); color:white;" target="_blank">今すぐ開く</a>
+                        <p style="color: var(--text-sub); margin-bottom: 15px;">今、このサイトで最もおすすめの作品です。クリックしてスコアを稼ごう！</p>
+                        <a href="https://scratch.mit.edu/projects/1259915297/" class="btn" style="background: var(--scratch-blue); color: white;" target="_blank">今すぐ遊ぶ</a>
                     </div>
                 </div>
             </section>
 
             <section style="margin-bottom: 40px;">
-                <h2 style="margin-bottom:20px; border-left: 5px solid var(--scratch-blue); padding-left: 15px;">📰 ニュース</h2>
+                <h2 style="margin-bottom:20px;">📰 最新ニュース</h2>
                 <div class="card">
                     <ul style="list-style: none;">
                         <li style="padding: 10px 0; border-bottom: 1px solid #333; display: flex; gap: 15px;">
-                            <span style="color: var(--scratch-blue); font-weight: bold;">2026/01/18</span>
-                            <span>ホーム画面に新セクションを追加しました。</span>
-                        </li>
-                        <li style="padding: 10px 0;">
-                            <span style="color: var(--scratch-blue); font-weight: bold;">2026/01/17</span>
-                            <span>NEXT-HUB システムアップデートを完了しました。</span>
+                            <span style="color: var(--scratch-blue); font-weight: bold; min-width: 85px;">2026/01/18</span>
+                            <span>ホーム画面のレイアウトを大幅に更新し、全作品リストを統合しました。</span>
                         </li>
                     </ul>
                 </div>
             </section>
 
             <h2 style="margin-bottom:20px;">プロジェクトリスト</h2>
-            <div class="grid" id="main-grid">
-                <div class="card scratch-project"><img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png"><h3>ブレインロット クリッカー</h3><a href="https://scratch.mit.edu/projects/1259915297/" style="display:block; margin-top:10px; color:var(--scratch-blue);" target="_blank">開く</a></div>
-                <div class="card scratch-project"><img src="https://scratch.mit.edu/get_image/project/307476661_480x360.png"><h3>3D Open World</h3><a href="https://scratch.mit.edu/projects/307476661/" style="display:block; margin-top:10px; color:var(--scratch-blue);" target="_blank">開く</a></div>
-                
-                <div class="card scratch-project more-content"><img src="https://uploads.scratch.mit.edu/get_image/project/1163188471_480x360.png"><h3>オレンジピンポン</h3><a href="https://scratch.mit.edu/projects/1163188471/" style="display:block; margin-top:10px; color:var(--scratch-blue);" target="_blank">開く</a></div>
-                <div class="card scratch-project more-content"><img src="https://uploads.scratch.mit.edu/get_image/project/1134606936_480x360.png"><h3>便利ツール</h3><a href="https://scratch.mit.edu/projects/1134606936/" style="display:block; margin-top:10px; color:var(--scratch-blue);" target="_blank">開く</a></div>
+            <div class="grid">
+                <div class="card scratch-project">
+                    <img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png">
+                    <h3>ブレインロット クリッカー</h3>
+                    <a href="https://scratch.mit.edu/projects/1259915297/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                </div>
+                <div class="card scratch-project">
+                    <img src="https://scratch.mit.edu/get_image/project/307476661_480x360.png">
+                    <h3>3D Open World</h3>
+                    <a href="https://scratch.mit.edu/projects/307476661/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                </div>
+                <div class="card scratch-project more-content">
+                    <img src="https://uploads.scratch.mit.edu/get_image/project/1163188471_480x360.png">
+                    <h3>オレンジピンポン</h3>
+                    <a href="https://scratch.mit.edu/projects/1163188471/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                </div>
+                <div class="card scratch-project more-content">
+                    <img src="https://uploads.scratch.mit.edu/get_image/project/1134606936_480x360.png">
+                    <h3>便利ツール</h3>
+                    <a href="https://scratch.mit.edu/projects/1134606936/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                </div>
+                <div class="card scratch-project more-content">
+                    <img src="https://uploads.scratch.mit.edu/get_image/project/1261118333_480x360.png">
+                    <h3>立ち絵作ったよー！</h3>
+                    <a href="https://scratch.mit.edu/projects/1261118333/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                </div>
+                <div class="card scratch-project more-content">
+                    <img src="https://uploads.scratch.mit.edu/get_image/project/1238399568_480x360.png">
+                    <h3>Get The Frog Out Of Here!</h3>
+                    <a href="https://scratch.mit.edu/projects/1238399568/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                </div>
             </div>
             <label for="show-more-check" class="btn btn-more">作品をもっと表示</label>
         </div>
 
         <div id="general-page" class="page-content">
-            <h2 style="margin-bottom:20px;">🌐 開発リソース</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>Scratch 公式</h3>
-                    <p>全ての始まりの場所。</p>
-                    <a href="https://scratch.mit.edu" target="_blank" style="color:var(--scratch-blue);">アクセス</a>
-                </div>
-                <div class="card">
-                    <h3>素材ライブラリ</h3>
-                    <p>準備中...</p>
-                </div>
+            <h2>🌐 開発リソース</h2>
+            <div class="card" style="margin-top:20px;">
+                <h3>制作に役立つリンク</h3>
+                <p>現在準備中です。Scratchや画像素材などのリンクをここに配置します。</p>
             </div>
         </div>
 
         <div id="news-page" class="page-content">
-            <h2 style="margin-bottom:20px;">📰 ニュースアーカイブ</h2>
-            <div class="card">
-                <p>過去のお知らせは現在整理中です。</p>
+            <h2>📰 ニュース一覧</h2>
+            <div class="card" style="margin-top:20px;">
+                <p>2026/01/18 - システムを最新バージョンに更新しました。</p>
             </div>
         </div>
 
         <div id="memo-page" class="page-content">
-            <div class="interaction-card" style="text-align: left;">
-                <h2>📝 クイックメモ</h2>
-                <textarea id="memo-area" style="height:300px; width: 100%; background: #000; color: #fff; border: 1px solid #333; padding: 10px; margin-top: 10px; border-radius: 8px;" placeholder="メモを記入..."></textarea>
-                <button onclick="saveMemo()" class="btn" style="background:#fff; color:#000; width:100%; margin-top:10px;">ブラウザに保存</button>
+            <div class="interaction-card">
+                <h2>📝 メモ帳</h2>
+                <textarea id="memo-area" style="width:100%; height:300px; background:#000; color:#fff; padding:15px; margin-top:15px; border-radius:8px; border:1px solid #333;" placeholder="メモを記入..."></textarea>
+                <button onclick="saveMemo()" class="btn" style="background:#fff; color:#000; width:100%; margin-top:10px;">保存</button>
             </div>
         </div>
 
         <section class="interaction-card">
-            <div style="display:flex; align-items:center; gap:15px; text-align:left; background:#111; padding:15px; border-radius:12px; margin-bottom:25px;">
-                <div style="width:50px; height:50px; border-radius:50%; background:var(--scratch-blue); display:flex; align-items:center; justify-content:center; font-weight:bold;">M</div>
-                <div><strong>Mikancat10</strong><br><small style="color:var(--text-sub);">対応: 14:00 - 22:00</small></div>
-            </div>
-
-            <div class="form-group">
-                <h3>📩 お問い合わせ / フィードバック</h3>
-                <input type="text" id="fb-name" class="fb-input" placeholder="お名前">
-                <textarea id="fb-text" style="height:120px; width: 100%; background: #000; color: #fff; border: 1px solid #333; padding: 12px; border-radius: 8px; margin-top: 8px;" placeholder="メッセージ内容..."></textarea>
-                <button onclick="sendFeedback(event)" class="btn" style="background:var(--scratch-blue); color:white; width:100%; margin-top:15px;">Discordへ送信</button>
-            </div>
+            <h3>📩 お問い合わせ / フィードバック</h3>
+            <input type="text" id="fb-name" style="width:100%; background:#000; border:1px solid #333; color:#fff; padding:12px; border-radius:8px; margin-top:10px;" placeholder="お名前">
+            <textarea id="fb-text" style="width:100%; height:120px; background:#000; border:1px solid #333; color:#fff; padding:12px; border-radius:8px; margin-top:10px;" placeholder="メッセージ..."></textarea>
+            <button onclick="sendFeedback()" class="btn" style="background:var(--scratch-blue); color:white; width:100%; margin-top:15px;">Discordへ送信</button>
         </section>
     </main>
 
@@ -202,7 +204,6 @@
         const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1456548755892469760/iE-O8tUvRrc_N0Uq0k71b9XFr8GCIcJ6ttCnVGsK5uOs4RSzux_CfpgtQk_JRPuYluIp";
 
         async function sendToDiscord(payload) {
-            if (!DISCORD_WEBHOOK_URL) return;
             try {
                 await fetch(DISCORD_WEBHOOK_URL, {
                     method: 'POST',
@@ -218,29 +219,25 @@
             likes++;
             document.getElementById('like-count').innerText = likes;
             localStorage.setItem('nh_likes', likes);
-            sendToDiscord({ embeds: [{ title: "❤ いいね！通知", description: `累計: **${likes}** いいね`, color: 0xff4757 }] });
+            sendToDiscord({ embeds: [{ title: "❤ いいね！", description: `累計: **${likes}**`, color: 0xff4757 }] });
         }
 
-        async function sendFeedback(e) {
+        async function sendFeedback() {
             const name = document.getElementById('fb-name').value || "匿名";
             const msg = document.getElementById('fb-text').value;
             if (!msg) return alert("内容を入力してください");
-            const btn = e.target;
-            btn.innerText = "送信中..."; btn.disabled = true;
             await sendToDiscord({
-                embeds: [{ title: "📩 新着メッセージ", color: 0x4d97ff, fields: [{ name: "送信者", value: name, inline: true }, { name: "内容", value: msg }], timestamp: new Date().toISOString() }]
+                embeds: [{ title: "📩 新着メッセージ", color: 0x4d97ff, fields: [{ name: "送信者", value: name }, { name: "内容", value: msg }] }]
             });
-            alert("Discordへ送信しました！");
+            alert("送信しました！");
             document.getElementById('fb-text').value = "";
-            btn.innerText = "Discordへ送信"; btn.disabled = false;
         }
 
         function updateStatus() {
             const hour = new Date().getHours();
-            const statusEl = document.getElementById('contact-status');
-            if (hour >= 17 && hour < 22) { statusEl.innerText = "🟢 お問い合わせ可能"; statusEl.className = "status-badge status-on"; }
-            else if (hour === 16) { statusEl.innerText = "⏳ まもなく開始"; statusEl.className = "status-badge status-soon"; }
-            else { statusEl.innerText = "🔴 お問い合わせ終了"; statusEl.className = "status-badge status-off"; }
+            const el = document.getElementById('contact-status');
+            if (hour >= 14 && hour < 22) { el.innerText = "🟢 お問い合わせ可能"; el.className = "status-badge status-on"; }
+            else { el.innerText = "🔴 お問い合わせ終了"; el.className = "status-badge status-off"; }
         }
 
         document.getElementById('js-search').addEventListener('input', (e) => {
@@ -253,15 +250,11 @@
 
         function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
         function saveMemo() { localStorage.setItem('nh_memo', document.getElementById('memo-area').value); alert("保存しました"); }
-
-        // 初期化
-        updateStatus();
-        setInterval(updateStatus, 60000);
-        document.getElementById('memo-area').value = localStorage.getItem('nh_memo') || "";
         
+        updateStatus();
+        document.getElementById('memo-area').value = localStorage.getItem('nh_memo') || "";
         fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true')
-            .then(r => r.json()).then(d => { document.getElementById('weather-text').innerText = `Tokyo: ${d.current_weather.temperature}°C`; })
-            .catch(() => { document.getElementById('weather-text').innerText = "Weather N/A"; });
+            .then(r => r.json()).then(d => { document.getElementById('weather-text').innerText = `Tokyo: ${d.current_weather.temperature}°C`; });
     </script>
 </body>
 </html>
