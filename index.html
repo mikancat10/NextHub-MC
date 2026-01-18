@@ -214,31 +214,6 @@
     </main>
 
     <script>
-        // --- ニュース設定 (URLをまるごと入れるだけ) ---
-        const NEWS_FULL_URL = "https://newsapi.org/v2/top-headlines?country=jp&category=technology&apiKey=YOUR_NEWSAPI_KEY_HERE";
-
-        function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
-
-        async function fetchNews() {
-            const container = document.getElementById('news-container');
-            if (NEWS_FULL_URL.includes("YOUR_NEWSAPI_KEY_HERE")) {
-                container.innerHTML = "<p>URLにAPIキーを設定してください。</p>";
-                return;
-            }
-            try {
-                const res = await fetch(312c3568831b4fb588b1ab9daeeecd1f);
-                const data = await res.json();
-                container.innerHTML = data.articles.slice(0, 6).map(art => `
-                    <div class="card">
-                        <img src="${art.urlToImage || 'https://via.placeholder.com/300x169?text=No+Image'}">
-                        <h4>${art.title}</h4>
-                        <a href="${art.url}" target="_blank" style="color:var(--scratch-blue); font-size:0.8rem;">続きを読む</a>
-                    </div>
-                `).join('');
-            } catch (e) {
-                container.innerHTML = "<p>ニュースの取得に失敗しました。</p>";
-            }
-        }
 
         // 電卓
         let calcVal = "";
@@ -278,9 +253,69 @@
             });
         });
 
-        // 天気
-        fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true')
-            .then(r => r.json()).then(d => { document.getElementById('weather-text').innerText = `Tokyo: ${d.current_weather.temperature}°C`; });
+// --- 修正版ニュース取得 ---
+async function fetchNews() {
+    const container = document.getElementById('news-container');
+    container.innerHTML = "<p>読み込み中...</p>";
+
+    // APIキーが入っているかチェック
+    if (NEWS_API_URL.includes("ここに自分のAPIキーを入れる")) {
+        container.innerHTML = "<p style='color:#ff4757;'>⚠️ エラー: APIキーが設定されていません。</p>";
+        return;
+    }
+
+    try {
+        const res = await fetch(NEWS_API_URL);
+        const data = await res.json();
+        
+        // NewsAPI特有のエラー（制限など）を表示
+        if (data.status === "error") {
+            container.innerHTML = `<p style='color:#ff4757;'>⚠️ APIエラー: ${data.message}</p>`;
+            return;
+        }
+
+        if (data.articles && data.articles.length > 0) {
+            container.innerHTML = data.articles.slice(0, 6).map(art => `
+                <div class="card">
+                    <img src="${art.urlToImage || 'https://via.placeholder.com/300x169?text=No+Image'}">
+                    <h4>${art.title}</h4>
+                    <a href="${art.url}" target="_blank" style="color:var(--scratch-blue); font-size:0.8rem;">続きを読む</a>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = "<p>ニュースが見つかりませんでした。</p>";
+        }
+    } catch (e) {
+        container.innerHTML = `<p style='color:#ff4757;'>⚠️ 通信エラー: ネット接続かCORS制限を確認してください。</p>`;
+        console.error(e);
+    }
+}
+
+// --- 修正版天気取得 ---
+function fetchWeather() {
+    const weatherEl = document.getElementById('weather-text');
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true')
+        .then(r => {
+            if (!r.ok) throw new Error("天気データが取れません");
+            return r.json();
+        })
+        .then(d => {
+            const temp = d.current_weather.temperature;
+            weatherEl.innerText = `Tokyo: ${temp}°C`;
+        })
+        .catch(e => {
+            weatherEl.innerText = "Weather: N/A (Offline)";
+            console.error(e);
+        });
+}
+
+// ページ読み込み時に実行
+window.onload = () => {
+    fetchWeather();
+    updateStatus();
+    // ニュースは「ニュース」タブをクリックした時に実行されますが、
+    // 最初に見せたい場合はここでも fetchNews() を呼ぶと良いです。
+};
 
         // ステータス (17:00-22:00受付)
         function updateStatus() {
@@ -302,4 +337,5 @@
     </script>
 </body>
 </html>
+
 
