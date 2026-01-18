@@ -253,61 +253,72 @@
             });
         });
 
-// --- 修正版ニュース取得 ---
-async function fetchNews() {
-    const container = document.getElementById('news-container');
-    container.innerHTML = "<p>読み込み中...</p>";
+<script>
+    // --- API設定 ---
+    const YOUR_KEY = "312c3568831b4fb588b1ab9daeeecd1f";
+    // ブラウザのブロックを回避するための中継URLを追加
+    const NEWS_API_URL = `https://newsapi.org/v2/top-headlines?country=jp&category=technology&apiKey=${YOUR_KEY}`;
+    const CORS_PROXY = "https://api.allorigins.win/raw?url="; // これでエラーを防ぎます
 
-    // APIキーが入っているかチェック
-    if (NEWS_API_URL.includes("ここに自分のAPIキーを入れる")) {
-        container.innerHTML = "<p style='color:#ff4757;'>⚠️ エラー: APIキーが設定されていません。</p>";
-        return;
-    }
+    function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
 
-    try {
-        const res = await fetch(NEWS_API_URL);
-        const data = await res.json();
+    // ニュース取得機能
+    async function fetchNews() {
+        const container = document.getElementById('news-container');
+        container.innerHTML = "<p>読み込み中...</p>";
         
-        // NewsAPI特有のエラー（制限など）を表示
-        if (data.status === "error") {
-            container.innerHTML = `<p style='color:#ff4757;'>⚠️ APIエラー: ${data.message}</p>`;
-            return;
+        try {
+            // プロキシ経由でNewsAPIを叩く
+            const res = await fetch(CORS_PROXY + encodeURIComponent(NEWS_API_URL));
+            const data = await res.json();
+            
+            if (data.articles && data.articles.length > 0) {
+                container.innerHTML = data.articles.slice(0, 6).map(art => `
+                    <div class="card">
+                        <img src="${art.urlToImage || 'https://via.placeholder.com/300x169?text=No+Image'}" onerror="this.src='https://via.placeholder.com/300x169?text=No+Image'">
+                        <h4 style="margin-top:10px; font-size:0.9rem;">${art.title}</h4>
+                        <a href="${art.url}" target="_blank" style="color:var(--scratch-blue); font-size:0.7rem; text-decoration:none; display:block; margin-top:10px;">続きを読む →</a>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = "<p>ニュースが取得できませんでした。キーの制限を確認してください。</p>";
+            }
+        } catch (e) {
+            container.innerHTML = "<p>読み込みエラー。更新ボタンを押してみてください。</p>";
+            console.error("News Error:", e);
         }
-
-        if (data.articles && data.articles.length > 0) {
-            container.innerHTML = data.articles.slice(0, 6).map(art => `
-                <div class="card">
-                    <img src="${art.urlToImage || 'https://via.placeholder.com/300x169?text=No+Image'}">
-                    <h4>${art.title}</h4>
-                    <a href="${art.url}" target="_blank" style="color:var(--scratch-blue); font-size:0.8rem;">続きを読む</a>
-                </div>
-            `).join('');
-        } else {
-            container.innerHTML = "<p>ニュースが見つかりませんでした。</p>";
-        }
-    } catch (e) {
-        container.innerHTML = `<p style='color:#ff4757;'>⚠️ 通信エラー: ネット接続かCORS制限を確認してください。</p>`;
-        console.error(e);
     }
-}
 
-// --- 修正版天気取得 ---
-function fetchWeather() {
-    const weatherEl = document.getElementById('weather-text');
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true')
-        .then(r => {
-            if (!r.ok) throw new Error("天気データが取れません");
-            return r.json();
-        })
-        .then(d => {
+    // 天気取得機能 (Open-Meteoを使用)
+    async function fetchWeather() {
+        const weatherEl = document.getElementById('weather-text');
+        try {
+            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true');
+            const d = await res.json();
             const temp = d.current_weather.temperature;
-            weatherEl.innerText = `Tokyo: ${temp}°C`;
-        })
-        .catch(e => {
-            weatherEl.innerText = "Weather: N/A (Offline)";
-            console.error(e);
-        });
-}
+            const code = d.current_weather.weathercode;
+            
+            // 天気コードをアイコンに変換（簡易版）
+            let icon = "☁️";
+            if (code === 0) icon = "☀️";
+            if (code >= 1 && code <= 3) icon = "🌤";
+            if (code >= 61 && code <= 67) icon = "☔";
+
+            weatherEl.innerText = `Tokyo: ${icon} ${temp}°C`;
+        } catch (e) {
+            weatherEl.innerText = "Tokyo: --°C";
+        }
+    }
+
+    // ページ読み込み時の処理
+    window.addEventListener('DOMContentLoaded', () => {
+        fetchWeather();
+        updateStatus();
+    });
+
+    // --- 他の機能（電卓・メモ・検索等）はそのまま維持 ---
+    // ... (既存のコードをここに続けてください)
+</script>
 
 // ページ読み込み時に実行
 window.onload = () => {
