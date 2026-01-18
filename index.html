@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXT-HUB</title>
+    <title>NEXT-HUB | Advanced Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
@@ -18,12 +18,13 @@
             --border-color: #2c2c2c;
             --scratch-blue: #4d97ff;
             --like-color: #ff4757;
+            --accent-green: #2ecc71;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; transition: 1s; }
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; }
 
-        /* 制御用 */
-        #home-radio, #news-radio, #memo-radio, #general-radio, #sidebar-check, #show-more-check { display: none !important; }
+        /* ラジオボタン制御 */
+        #home-radio, #news-radio, #tools-radio, #dev-radio, #sidebar-check { display: none !important; }
 
         /* ナビゲーション */
         nav { padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--bg-nav); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
@@ -36,38 +37,41 @@
         /* サイドバー */
         .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: var(--bg-sidebar); z-index: 150; transition: 0.4s; padding: 80px 20px; border-right: 1px solid var(--border-color); }
         #sidebar-check:checked ~ .sidebar { left: 0; }
-        .sidebar-item { display: block; color: var(--text-main); text-decoration: none; padding: 15px 10px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .sidebar-item { display: block; color: var(--text-main); text-decoration: none; padding: 15px 10px; border-bottom: 1px solid var(--border-color); cursor: pointer; border-radius: 8px; }
+        .sidebar-item:hover { background: #222; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 140; display: none; }
         #sidebar-check:checked ~ .overlay { display: block; }
 
         /* ヘッダー */
-        header { text-align: center; padding: 40px 20px; background: var(--bg-header); }
+        header { text-align: center; padding: 60px 20px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); }
         .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; }
-        .status-on { background: #2ecc71; color: #fff; }
-        .status-soon { background: #f1c40f; color: #000; }
+        .status-on { background: var(--accent-green); color: #fff; }
         .status-off { background: #e74c3c; color: #fff; }
 
-        /* コンテンツ表示 */
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px 5%; }
+        /* コンテンツ */
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 5%; }
         .page-content { display: none; animation: fadeIn 0.4s ease; }
         #home-radio:checked ~ .container #home-page,
         #news-radio:checked ~ .container #news-page,
-        #memo-radio:checked ~ .container #memo-page,
-        #general-radio:checked ~ .container #general-page { display: block; }
+        #tools-radio:checked ~ .container #tools-page,
+        #dev-radio:checked ~ .container #dev-page { display: block; }
 
-        /* グリッドとカード */
+        /* グリッド・カード */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: #1a1a1a; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: 0.3s; }
-        .card img { width: 100%; border-radius: 8px; aspect-ratio: 16/9; object-fit: cover; }
-        
-        .interaction-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 30px; border-radius: 15px; margin-top: 40px; }
-        .btn { padding: 12px 24px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600; transition: 0.2s; text-decoration: none; display: inline-block; text-align: center; }
-        .btn-like { background: var(--like-color); color: white; border-radius: 50px; }
-        .btn-more { display: block; width: fit-content; margin: 30px auto; background: #333; color: #fff; }
-
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: 0.3s; }
+        .card:hover { border-color: #444; transform: translateY(-5px); }
+        .card img { width: 100%; border-radius: 8px; aspect-ratio: 16/9; object-fit: cover; margin-bottom: 15px; }
         .search-hide { display: none !important; }
-        .more-content { display: none; }
-        #show-more-check:checked ~ .container #home-page .more-content { display: block; }
+
+        /* 便利ツール：電卓用 */
+        .calc-display { width: 100%; padding: 15px; background: #000; color: var(--accent-green); text-align: right; font-size: 1.5rem; border-radius: 8px; margin-bottom: 10px; font-family: monospace; border: 1px solid #333; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { padding: 15px; border: none; border-radius: 8px; background: #333; color: white; cursor: pointer; font-weight: bold; }
+        .calc-btn:hover { background: #444; }
+
+        .btn { padding: 12px 24px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-blue { background: var(--scratch-blue); color: white; }
+        .btn-like { background: var(--like-color); color: white; border-radius: 50px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -76,10 +80,9 @@
 
     <input type="radio" name="page" id="home-radio" checked>
     <input type="radio" name="page" id="news-radio">
-    <input type="radio" name="page" id="memo-radio">
-    <input type="radio" name="page" id="general-radio">
+    <input type="radio" name="page" id="tools-radio">
+    <input type="radio" name="page" id="dev-radio">
     <input type="checkbox" id="sidebar-check">
-    <input type="checkbox" id="show-more-check">
 
     <nav>
         <div class="nav-left">
@@ -93,154 +96,206 @@
 
     <aside class="sidebar">
         <label for="home-radio" class="sidebar-item" onclick="closeSidebar()">🏠 ホーム</label>
-        <label for="general-radio" class="sidebar-item" onclick="closeSidebar()">🌐 開発リソース</label>
-        <label for="memo-radio" class="sidebar-item" onclick="closeSidebar()">📝 メモ帳</label>
-        <label for="news-radio" class="sidebar-item" onclick="closeSidebar()">📰 ニュース</label>
+        <label for="news-radio" class="sidebar-item" onclick="closeSidebar(); fetchNews()">📰 ニュース (API)</label>
+        <label for="tools-radio" class="sidebar-item" onclick="closeSidebar()">🛠 便利ツール</label>
+        <label for="dev-radio" class="sidebar-item" onclick="closeSidebar()">🌐 開発リソース</label>
     </aside>
     <label for="sidebar-check" class="overlay"></label>
 
     <header>
-        <div id="weather-text" style="font-size: 0.8rem; opacity: 0.6;">Weather Loading...</div>
-        <h1 style="font-size: 2.5rem; margin: 10px 0;">NEXT-HUB</h1>
+        <div id="weather-text" style="font-size: 0.8rem; opacity: 0.6; margin-bottom: 5px;">Weather Loading...</div>
+        <h1>NEXT-HUB Portal</h1>
         <div id="contact-status" class="status-badge">確認中...</div>
         <br>
         <button class="btn btn-like" onclick="sendLike()">❤ いいね！ <span id="like-count">0</span></button>
     </header>
 
     <main class="container">
+        
         <div id="home-page" class="page-content">
             <section style="margin-bottom: 40px;">
-                <h2 style="margin-bottom:20px;">⭐ おすすめの作品</h2>
-                <div class="card" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; border: 1px solid var(--scratch-blue);">
-                    <img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png" style="width: 100%; max-width: 350px;">
-                    <div style="flex: 1; min-width: 280px;">
-                        <span style="background: var(--scratch-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">PICK UP</span>
-                        <h3 style="margin: 10px 0;">ブレインロット クリッカー</h3>
-                        <p style="color: var(--text-sub); margin-bottom: 15px;">今、このサイトで最もおすすめの作品です。クリックしてスコアを稼ごう！</p>
-                        <a href="https://scratch.mit.edu/projects/1259915297/" class="btn" style="background: var(--scratch-blue); color: white;" target="_blank">今すぐ遊ぶ</a>
-                    </div>
-                </div>
-            </section>
-
-            <section style="margin-bottom: 40px;">
-                <h2 style="margin-bottom:20px;">📰 最新ニュース</h2>
-                <div class="card">
-                    <ul style="list-style: none;">
-                        <li style="padding: 10px 0; border-bottom: 1px solid #333; display: flex; gap: 15px;">
-                            <span style="color: var(--scratch-blue); font-weight: bold; min-width: 85px;">2026/01/18</span>
-                            <span>ホーム画面のレイアウトを大幅に更新し、全作品リストを統合しました。</span>
-                        </li>
+                <h2 style="margin-bottom:20px;">✨ What's New / 新機能</h2>
+                <div class="card" style="border-left: 4px solid var(--accent-green);">
+                    <p style="margin-bottom: 10px;"><b>2026/01/18 アップデート:</b></p>
+                    <ul style="list-style: none; padding-left: 10px;">
+                        <li>🚀 ニュースセクションがNewsAPIによるリアルタイム取得に対応。</li>
+                        <li>🛠 電卓・メモ・翻訳・タイマーを統合した「便利ツール」を新設。</li>
+                        <li>📁 全プロジェクトリストを統合し、検索しやすくなりました。</li>
                     </ul>
                 </div>
             </section>
 
-            <h2 style="margin-bottom:20px;">プロジェクトリスト</h2>
-            <div class="grid">
+            <h2 style="margin-bottom:20px;">📂 プロジェクトリスト</h2>
+            <div class="grid" id="project-list">
                 <div class="card scratch-project">
                     <img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png">
                     <h3>ブレインロット クリッカー</h3>
-                    <a href="https://scratch.mit.edu/projects/1259915297/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                    <a href="https://scratch.mit.edu/projects/1259915297/" class="btn btn-blue" style="width:100%; margin-top:10px;" target="_blank">開く</a>
                 </div>
                 <div class="card scratch-project">
                     <img src="https://scratch.mit.edu/get_image/project/307476661_480x360.png">
                     <h3>3D Open World</h3>
-                    <a href="https://scratch.mit.edu/projects/307476661/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                    <a href="https://scratch.mit.edu/projects/307476661/" class="btn btn-blue" style="width:100%; margin-top:10px;" target="_blank">開く</a>
                 </div>
-                <div class="card scratch-project more-content">
+                <div class="card scratch-project">
                     <img src="https://uploads.scratch.mit.edu/get_image/project/1163188471_480x360.png">
                     <h3>オレンジピンポン</h3>
-                    <a href="https://scratch.mit.edu/projects/1163188471/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                    <a href="https://scratch.mit.edu/projects/1163188471/" class="btn btn-blue" style="width:100%; margin-top:10px;" target="_blank">開く</a>
                 </div>
-                <div class="card scratch-project more-content">
+                <div class="card scratch-project">
                     <img src="https://uploads.scratch.mit.edu/get_image/project/1134606936_480x360.png">
-                    <h3>便利ツール</h3>
-                    <a href="https://scratch.mit.edu/projects/1134606936/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                    <h3>便利ツール (Scratch版)</h3>
+                    <a href="https://scratch.mit.edu/projects/1134606936/" class="btn btn-blue" style="width:100%; margin-top:10px;" target="_blank">開く</a>
                 </div>
-                <div class="card scratch-project more-content">
+                <div class="card scratch-project">
                     <img src="https://uploads.scratch.mit.edu/get_image/project/1261118333_480x360.png">
                     <h3>立ち絵作ったよー！</h3>
-                    <a href="https://scratch.mit.edu/projects/1261118333/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                    <a href="https://scratch.mit.edu/projects/1261118333/" class="btn btn-blue" style="width:100%; margin-top:10px;" target="_blank">開く</a>
                 </div>
-                <div class="card scratch-project more-content">
+                <div class="card scratch-project">
                     <img src="https://uploads.scratch.mit.edu/get_image/project/1238399568_480x360.png">
                     <h3>Get The Frog Out Of Here!</h3>
-                    <a href="https://scratch.mit.edu/projects/1238399568/" style="color:var(--scratch-blue); display:block; margin-top:10px;" target="_blank">開く</a>
+                    <a href="https://scratch.mit.edu/projects/1238399568/" class="btn btn-blue" style="width:100%; margin-top:10px;" target="_blank">開く</a>
                 </div>
-            </div>
-            <label for="show-more-check" class="btn btn-more">作品をもっと表示</label>
-        </div>
-
-        <div id="general-page" class="page-content">
-            <h2>🌐 開発リソース</h2>
-            <div class="card" style="margin-top:20px;">
-                <h3>制作に役立つリンク</h3>
-                <p>現在準備中です。Scratchや画像素材などのリンクをここに配置します。</p>
             </div>
         </div>
 
         <div id="news-page" class="page-content">
-            <h2>📰 ニュース一覧</h2>
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h2>📰 最新テクノロジーニュース</h2>
+                <button onclick="fetchNews()" class="btn" style="background:#222; font-size:0.8rem;">更新</button>
+            </div>
+            <div id="news-container" class="grid">
+                <p style="color:var(--text-sub);">NewsAPIキーを設定するとここにニュースが表示されます。</p>
+            </div>
+        </div>
+
+        <div id="tools-page" class="page-content">
+            <h2 style="margin-bottom:20px;">🛠 統合便利ツール</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>🔢 電卓</h3>
+                    <input type="text" id="calc-display" class="calc-display" readonly value="0">
+                    <div class="calc-grid">
+                        <button class="calc-btn" onclick="clearCalc()" style="background:#e74c3c;">C</button>
+                        <button class="calc-btn" onclick="pressCalc('/')">/</button>
+                        <button class="calc-btn" onclick="pressCalc('*')">×</button>
+                        <button class="calc-btn" onclick="pressCalc('-')">-</button>
+                        <button class="calc-btn" onclick="pressCalc('7')">7</button>
+                        <button class="calc-btn" onclick="pressCalc('8')">8</button>
+                        <button class="calc-btn" onclick="pressCalc('9')">9</button>
+                        <button class="calc-btn" onclick="pressCalc('+')">+</button>
+                        <button class="calc-btn" onclick="pressCalc('4')">4</button>
+                        <button class="calc-btn" onclick="pressCalc('5')">5</button>
+                        <button class="calc-btn" onclick="pressCalc('6')">6</button>
+                        <button class="calc-btn" onclick="calculate()" style="background:var(--accent-green);">=</button>
+                        <button class="calc-btn" onclick="pressCalc('1')">1</button>
+                        <button class="calc-btn" onclick="pressCalc('2')">2</button>
+                        <button class="calc-btn" onclick="pressCalc('3')">3</button>
+                        <button class="calc-btn" onclick="pressCalc('0')">0</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📝 ローカルメモ</h3>
+                    <textarea id="memo-area" style="width:100%; height:230px; background:#000; color:#fff; padding:15px; margin-top:10px; border-radius:8px; border:1px solid #333; outline:none; resize:none;"></textarea>
+                    <button onclick="saveMemo()" class="btn btn-blue" style="width:100%; margin-top:10px;">保存</button>
+                </div>
+
+                <div class="card" style="display:flex; flex-direction:column; gap:15px;">
+                    <div>
+                        <h3>🌐 翻訳ツール</h3>
+                        <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:10px;">Google翻訳のエンジンを利用します。</p>
+                        <a href="https://translate.google.co.jp/?hl=ja" target="_blank" class="btn" style="background:#4285F4; color:white; width:100%;">Google翻訳を開く</a>
+                    </div>
+                    <hr style="border-color:#333;">
+                    <div>
+                        <h3>⏰ クイックタイマー</h3>
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <input type="number" id="timer-sec" placeholder="秒" style="width:80px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:8px;">
+                            <button onclick="startTimer()" class="btn" style="background:var(--accent-green); flex:1;">開始</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dev-page" class="page-content">
+            <h2>🌐 開発リソース</h2>
             <div class="card" style="margin-top:20px;">
-                <p>2026/01/18 - システムを最新バージョンに更新しました。</p>
+                <h3>Go API (Gin) 設計ドキュメント</h3>
+                <p style="margin-bottom:15px;">Go言語でバックエンドを構築中です。以下のエンドポイントを実装予定です：</p>
+                <code style="display:block; background:#000; padding:15px; border-radius:8px; font-size:0.85rem;">
+                    GET /api/v1/projects - 全プロジェクト取得<br>
+                    POST /api/v1/feedback - Discord通知送信<br>
+                    GET /api/v1/status - 稼働状況確認
+                </code>
             </div>
         </div>
 
-        <div id="memo-page" class="page-content">
-            <div class="interaction-card">
-                <h2>📝 メモ帳</h2>
-                <textarea id="memo-area" style="width:100%; height:300px; background:#000; color:#fff; padding:15px; margin-top:15px; border-radius:8px; border:1px solid #333;" placeholder="メモを記入..."></textarea>
-                <button onclick="saveMemo()" class="btn" style="background:#fff; color:#000; width:100%; margin-top:10px;">保存</button>
-            </div>
-        </div>
-
-        <section class="interaction-card">
-            <h3>📩 お問い合わせ / フィードバック</h3>
-            <input type="text" id="fb-name" style="width:100%; background:#000; border:1px solid #333; color:#fff; padding:12px; border-radius:8px; margin-top:10px;" placeholder="お名前">
-            <textarea id="fb-text" style="width:100%; height:120px; background:#000; border:1px solid #333; color:#fff; padding:12px; border-radius:8px; margin-top:10px;" placeholder="メッセージ..."></textarea>
-            <button onclick="sendFeedback()" class="btn" style="background:var(--scratch-blue); color:white; width:100%; margin-top:15px;">Discordへ送信</button>
-        </section>
     </main>
 
     <script>
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1456548755892469760/iE-O8tUvRrc_N0Uq0k71b9XFr8GCIcJ6ttCnVGsK5uOs4RSzux_CfpgtQk_JRPuYluIp";
+        // NewsAPI設定（ここにご自身のAPIキーを入力してください）
+        const NEWS_API_KEY = "YOUR_NEWSAPI_KEY_HERE";
 
-        async function sendToDiscord(payload) {
+        // サイドバー制御
+        function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
+
+        // ニュース取得機能
+        async function fetchNews() {
+            const container = document.getElementById('news-container');
+            if (NEWS_API_KEY === "YOUR_NEWSAPI_KEY_HERE") {
+                container.innerHTML = "<p>NewsAPIのキーをコードに入力してください。</p>";
+                return;
+            }
             try {
-                await fetch(DISCORD_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-            } catch (e) { console.error(e); }
+                const res = await fetch(`https://newsapi.org/v2/top-headlines?country=jp&category=technology&apiKey=${NEWS_API_KEY}`);
+                const data = await res.json();
+                container.innerHTML = data.articles.slice(0, 6).map(art => `
+                    <div class="card">
+                        <img src="${art.urlToImage || 'https://via.placeholder.com/300x169?text=No+Image'}">
+                        <h4>${art.title}</h4>
+                        <a href="${art.url}" target="_blank" style="color:var(--scratch-blue); font-size:0.8rem;">続きを読む</a>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = "<p>ニュースの取得に失敗しました。</p>";
+            }
         }
 
-        let likes = parseInt(localStorage.getItem('nh_likes')) || 0;
-        document.getElementById('like-count').innerText = likes;
-        function sendLike() {
-            likes++;
-            document.getElementById('like-count').innerText = likes;
-            localStorage.setItem('nh_likes', likes);
-            sendToDiscord({ embeds: [{ title: "❤ いいね！", description: `累計: **${likes}**`, color: 0xff4757 }] });
+        // 電卓機能
+        let calcVal = "";
+        function pressCalc(v) { calcVal += v; document.getElementById('calc-display').value = calcVal; }
+        function clearCalc() { calcVal = ""; document.getElementById('calc-display').value = "0"; }
+        function calculate() {
+            try {
+                calcVal = eval(calcVal.replace('×', '*')).toString();
+                document.getElementById('calc-display').value = calcVal;
+            } catch {
+                document.getElementById('calc-display').value = "Error";
+                calcVal = "";
+            }
         }
 
-        async function sendFeedback() {
-            const name = document.getElementById('fb-name').value || "匿名";
-            const msg = document.getElementById('fb-text').value;
-            if (!msg) return alert("内容を入力してください");
-            await sendToDiscord({
-                embeds: [{ title: "📩 新着メッセージ", color: 0x4d97ff, fields: [{ name: "送信者", value: name }, { name: "内容", value: msg }] }]
-            });
-            alert("送信しました！");
-            document.getElementById('fb-text').value = "";
+        // メモ帳機能
+        function saveMemo() {
+            localStorage.setItem('nh_memo_v2', document.getElementById('memo-area').value);
+            alert("ブラウザの保存領域（LocalStorage）に保存しました。");
+        }
+        document.getElementById('memo-area').value = localStorage.getItem('nh_memo_v2') || "";
+
+        // タイマー機能
+        function startTimer() {
+            const sec = document.getElementById('timer-sec').value;
+            if(!sec) return alert("秒数を入力してください");
+            alert(sec + "秒のタイマーを開始します。");
+            setTimeout(() => {
+                alert("⏰ 時間になりました！");
+            }, sec * 1000);
         }
 
-        function updateStatus() {
-            const hour = new Date().getHours();
-            const el = document.getElementById('contact-status');
-            if (hour >= 14 && hour < 22) { el.innerText = "🟢 お問い合わせ可能"; el.className = "status-badge status-on"; }
-            else { el.innerText = "🔴 お問い合わせ終了"; el.className = "status-badge status-off"; }
-        }
-
+        // 検索機能
         document.getElementById('js-search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             document.querySelectorAll('.scratch-project').forEach(p => {
@@ -249,13 +304,27 @@
             });
         });
 
-        function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
-        function saveMemo() { localStorage.setItem('nh_memo', document.getElementById('memo-area').value); alert("保存しました"); }
-        
-        updateStatus();
-        document.getElementById('memo-area').value = localStorage.getItem('nh_memo') || "";
+        // 天気取得
         fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true')
             .then(r => r.json()).then(d => { document.getElementById('weather-text').innerText = `Tokyo: ${d.current_weather.temperature}°C`; });
+
+        // ステータス更新
+        function updateStatus() {
+            const hr = new Date().getHours();
+            const el = document.getElementById('contact-status');
+            if (hr >= 14 && hr < 22) { el.innerText = "🟢 お問い合わせ受付中"; el.className = "status-badge status-on"; }
+            else { el.innerText = "🔴 時間外 (14:00-22:00受付)"; el.className = "status-badge status-off"; }
+        }
+        updateStatus();
+
+        // いいね機能 (既存を維持)
+        let likes = parseInt(localStorage.getItem('nh_likes')) || 0;
+        document.getElementById('like-count').innerText = likes;
+        function sendLike() {
+            likes++;
+            document.getElementById('like-count').innerText = likes;
+            localStorage.setItem('nh_likes', likes);
+        }
     </script>
 </body>
 </html>
