@@ -24,7 +24,7 @@
         body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; }
 
         /* ラジオボタン制御 */
-        #home-radio, #news-radio, #tools-radio, #dev-radio, #sidebar-check { display: none !important; }
+        #home-radio, #news-radio, #tools-radio, #sidebar-check { display: none !important; }
 
         /* ナビゲーション */
         nav { padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--bg-nav); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
@@ -53,8 +53,7 @@
         .page-content { display: none; animation: fadeIn 0.4s ease; }
         #home-radio:checked ~ .container #home-page,
         #news-radio:checked ~ .container #news-page,
-        #tools-radio:checked ~ .container #tools-page,
-        #dev-radio:checked ~ .container #dev-page { display: block; }
+        #tools-radio:checked ~ .container #tools-page { display: block; }
 
         /* グリッド・カード */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
@@ -63,7 +62,7 @@
         .card img { width: 100%; border-radius: 8px; aspect-ratio: 16/9; object-fit: cover; margin-bottom: 15px; }
         .search-hide { display: none !important; }
 
-        /* 便利ツール：電卓用 */
+        /* 便利ツール用 */
         .calc-display { width: 100%; padding: 15px; background: #000; color: var(--accent-green); text-align: right; font-size: 1.5rem; border-radius: 8px; margin-bottom: 10px; font-family: monospace; border: 1px solid #333; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .calc-btn { padding: 15px; border: none; border-radius: 8px; background: #333; color: white; cursor: pointer; font-weight: bold; }
@@ -81,7 +80,6 @@
     <input type="radio" name="page" id="home-radio" checked>
     <input type="radio" name="page" id="news-radio">
     <input type="radio" name="page" id="tools-radio">
-    <input type="radio" name="page" id="dev-radio">
     <input type="checkbox" id="sidebar-check">
 
     <nav>
@@ -96,9 +94,8 @@
 
     <aside class="sidebar">
         <label for="home-radio" class="sidebar-item" onclick="closeSidebar()">🏠 ホーム</label>
-        <label for="news-radio" class="sidebar-item" onclick="closeSidebar(); fetchNews()">📰 ニュース (API)</label>
+        <label for="news-radio" class="sidebar-item" onclick="closeSidebar(); fetchNews()">📰 ニュース</label>
         <label for="tools-radio" class="sidebar-item" onclick="closeSidebar()">🛠 便利ツール</label>
-        <label for="dev-radio" class="sidebar-item" onclick="closeSidebar()">🌐 開発リソース</label>
     </aside>
     <label for="sidebar-check" class="overlay"></label>
 
@@ -114,14 +111,9 @@
         
         <div id="home-page" class="page-content">
             <section style="margin-bottom: 40px;">
-                <h2 style="margin-bottom:20px;">✨ What's New / 新機能</h2>
+                <h2 style="margin-bottom:20px;">✨ What's New</h2>
                 <div class="card" style="border-left: 4px solid var(--accent-green);">
-                    <p style="margin-bottom: 10px;"><b>2026/01/18 アップデート:</b></p>
-                    <ul style="list-style: none; padding-left: 10px;">
-                        <li>🚀 ニュースセクションがNewsAPIによるリアルタイム取得に対応。</li>
-                        <li>🛠 電卓・メモ・翻訳・タイマーを統合した「便利ツール」を新設。</li>
-                        <li>📁 全プロジェクトリストを統合し、検索しやすくなりました。</li>
-                    </ul>
+                    <p><b>最新アップデート:</b> ニュース取得方式の改善と便利ツールの統合を完了しました。</p>
                 </div>
             </section>
 
@@ -166,7 +158,7 @@
                 <button onclick="fetchNews()" class="btn" style="background:#222; font-size:0.8rem;">更新</button>
             </div>
             <div id="news-container" class="grid">
-                <p style="color:var(--text-sub);">NewsAPIキーを設定するとここにニュースが表示されます。</p>
+                <p style="color:var(--text-sub);">ニュースを読み込んでいます...</p>
             </div>
         </div>
 
@@ -205,7 +197,6 @@
                 <div class="card" style="display:flex; flex-direction:column; gap:15px;">
                     <div>
                         <h3>🌐 翻訳ツール</h3>
-                        <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:10px;">Google翻訳のエンジンを利用します。</p>
                         <a href="https://translate.google.co.jp/?hl=ja" target="_blank" class="btn" style="background:#4285F4; color:white; width:100%;">Google翻訳を開く</a>
                     </div>
                     <hr style="border-color:#333;">
@@ -220,37 +211,22 @@
             </div>
         </div>
 
-        <div id="dev-page" class="page-content">
-            <h2>🌐 開発リソース</h2>
-            <div class="card" style="margin-top:20px;">
-                <h3>Go API (Gin) 設計ドキュメント</h3>
-                <p style="margin-bottom:15px;">Go言語でバックエンドを構築中です。以下のエンドポイントを実装予定です：</p>
-                <code style="display:block; background:#000; padding:15px; border-radius:8px; font-size:0.85rem;">
-                    GET /api/v1/projects - 全プロジェクト取得<br>
-                    POST /api/v1/feedback - Discord通知送信<br>
-                    GET /api/v1/status - 稼働状況確認
-                </code>
-            </div>
-        </div>
-
     </main>
 
     <script>
-        // NewsAPI設定（ここにご自身のAPIキーを入力してください）
-        const NEWS_API_KEY = "YOUR_NEWSAPI_KEY_HERE";
+        // --- ニュース設定 (URLをまるごと入れるだけ) ---
+        const NEWS_FULL_URL = "https://newsapi.org/v2/top-headlines?country=jp&category=technology&apiKey=YOUR_NEWSAPI_KEY_HERE";
 
-        // サイドバー制御
         function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
 
-        // ニュース取得機能
         async function fetchNews() {
             const container = document.getElementById('news-container');
-            if (NEWS_API_KEY === "YOUR_NEWSAPI_KEY_HERE") {
-                container.innerHTML = "<p>NewsAPIのキーをコードに入力してください。</p>";
+            if (NEWS_FULL_URL.includes("YOUR_NEWSAPI_KEY_HERE")) {
+                container.innerHTML = "<p>URLにAPIキーを設定してください。</p>";
                 return;
             }
             try {
-                const res = await fetch(`https://newsapi.org/v2/top-headlines?country=jp&category=technology&apiKey=${NEWS_API_KEY}`);
+                const res = await fetch(NEWS_FULL_URL);
                 const data = await res.json();
                 container.innerHTML = data.articles.slice(0, 6).map(art => `
                     <div class="card">
@@ -264,7 +240,7 @@
             }
         }
 
-        // 電卓機能
+        // 電卓
         let calcVal = "";
         function pressCalc(v) { calcVal += v; document.getElementById('calc-display').value = calcVal; }
         function clearCalc() { calcVal = ""; document.getElementById('calc-display').value = "0"; }
@@ -278,24 +254,22 @@
             }
         }
 
-        // メモ帳機能
+        // メモ
         function saveMemo() {
             localStorage.setItem('nh_memo_v2', document.getElementById('memo-area').value);
-            alert("ブラウザの保存領域（LocalStorage）に保存しました。");
+            alert("保存しました。");
         }
         document.getElementById('memo-area').value = localStorage.getItem('nh_memo_v2') || "";
 
-        // タイマー機能
+        // タイマー
         function startTimer() {
             const sec = document.getElementById('timer-sec').value;
-            if(!sec) return alert("秒数を入力してください");
-            alert(sec + "秒のタイマーを開始します。");
-            setTimeout(() => {
-                alert("⏰ 時間になりました！");
-            }, sec * 1000);
+            if(!sec) return alert("秒数を入れてください");
+            alert(sec + "秒のタイマーを開始。");
+            setTimeout(() => alert("⏰ 時間です！"), sec * 1000);
         }
 
-        // 検索機能
+        // 検索
         document.getElementById('js-search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             document.querySelectorAll('.scratch-project').forEach(p => {
@@ -304,11 +278,11 @@
             });
         });
 
-        // 天気取得
+        // 天気
         fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true')
             .then(r => r.json()).then(d => { document.getElementById('weather-text').innerText = `Tokyo: ${d.current_weather.temperature}°C`; });
 
-        // ステータス更新
+        // ステータス (17:00-22:00受付)
         function updateStatus() {
             const hr = new Date().getHours();
             const el = document.getElementById('contact-status');
@@ -317,7 +291,7 @@
         }
         updateStatus();
 
-        // いいね機能 (既存を維持)
+        // いいね
         let likes = parseInt(localStorage.getItem('nh_likes')) || 0;
         document.getElementById('like-count').innerText = likes;
         function sendLike() {
@@ -328,7 +302,3 @@
     </script>
 </body>
 </html>
-
-
-
-
