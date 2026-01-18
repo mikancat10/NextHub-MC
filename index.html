@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXT-HUB | Advanced Portal</title>
+    <title>NEXT-HUB</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
@@ -21,7 +21,7 @@
             --accent-green: #2ecc71;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; }
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
 
         /* ラジオボタン制御 */
         #home-radio, #news-radio, #tools-radio, #sidebar-check { display: none !important; }
@@ -57,7 +57,7 @@
 
         /* グリッド・カード */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: 0.3s; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; }
         .card:hover { border-color: #444; transform: translateY(-5px); }
         .card img { width: 100%; border-radius: 8px; aspect-ratio: 16/9; object-fit: cover; margin-bottom: 15px; }
         .search-hide { display: none !important; }
@@ -100,7 +100,7 @@
     <label for="sidebar-check" class="overlay"></label>
 
     <header>
-        <div id="weather-text" style="font-size: 0.8rem; opacity: 0.6; margin-bottom: 5px;">Weather Loading...</div>
+        <div id="weather-text" style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px; font-weight: bold; color: var(--accent-green);">Tokyo: --°C</div>
         <h1>NEXT-HUB Portal</h1>
         <div id="contact-status" class="status-badge">確認中...</div>
         <br>
@@ -108,15 +108,7 @@
     </header>
 
     <main class="container">
-        
         <div id="home-page" class="page-content">
-            <section style="margin-bottom: 40px;">
-                <h2 style="margin-bottom:20px;">✨ What's New</h2>
-                <div class="card" style="border-left: 4px solid var(--accent-green);">
-                    <p><b>最新アップデート:</b> ニュース取得方式の改善と便利ツールの統合を完了しました。</p>
-                </div>
-            </section>
-
             <h2 style="margin-bottom:20px;">📂 プロジェクトリスト</h2>
             <div class="grid" id="project-list">
                 <div class="card scratch-project">
@@ -155,7 +147,7 @@
         <div id="news-page" class="page-content">
             <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
                 <h2>📰 最新テクノロジーニュース</h2>
-                <button onclick="fetchNews()" class="btn" style="background:#222; font-size:0.8rem;">更新</button>
+                <button onclick="fetchNews()" class="btn" style="background:#222; font-size:0.8rem;">🔄 更新</button>
             </div>
             <div id="news-container" class="grid">
                 <p style="color:var(--text-sub);">ニュースを読み込んでいます...</p>
@@ -163,7 +155,7 @@
         </div>
 
         <div id="tools-page" class="page-content">
-            <h2 style="margin-bottom:20px;">🛠 統合便利ツール</h2>
+            <h2 style="margin-bottom:20px;">🛠 便利ツール</h2>
             <div class="grid">
                 <div class="card">
                     <h3>🔢 電卓</h3>
@@ -187,21 +179,19 @@
                         <button class="calc-btn" onclick="pressCalc('0')">0</button>
                     </div>
                 </div>
-
                 <div class="card">
                     <h3>📝 ローカルメモ</h3>
                     <textarea id="memo-area" style="width:100%; height:230px; background:#000; color:#fff; padding:15px; margin-top:10px; border-radius:8px; border:1px solid #333; outline:none; resize:none;"></textarea>
                     <button onclick="saveMemo()" class="btn btn-blue" style="width:100%; margin-top:10px;">保存</button>
                 </div>
-
-                <div class="card" style="display:flex; flex-direction:column; gap:15px;">
+                <div class="card" style="gap:15px;">
                     <div>
-                        <h3>🌐 翻訳ツール</h3>
-                        <a href="https://translate.google.co.jp/?hl=ja" target="_blank" class="btn" style="background:#4285F4; color:white; width:100%;">Google翻訳を開く</a>
+                        <h3>🌐 翻訳</h3>
+                        <a href="https://translate.google.co.jp/" target="_blank" class="btn" style="background:#4285F4; color:white; width:100%;">Google翻訳</a>
                     </div>
                     <hr style="border-color:#333;">
                     <div>
-                        <h3>⏰ クイックタイマー</h3>
+                        <h3>⏰ タイマー</h3>
                         <div style="display:flex; gap:10px; margin-top:10px;">
                             <input type="number" id="timer-sec" placeholder="秒" style="width:80px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:8px;">
                             <button onclick="startTimer()" class="btn" style="background:var(--accent-green); flex:1;">開始</button>
@@ -210,41 +200,72 @@
                 </div>
             </div>
         </div>
-
     </main>
 
     <script>
+        // --- 設定 ---
+        const NEWS_API_KEY = "312c3568831b4fb588b1ab9daeeecd1f";
+        const PROXY_URL = "https://api.allorigins.win/raw?url=";
 
-        // 電卓
-        let calcVal = "";
-        function pressCalc(v) { calcVal += v; document.getElementById('calc-display').value = calcVal; }
-        function clearCalc() { calcVal = ""; document.getElementById('calc-display').value = "0"; }
-        function calculate() {
+        function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
+
+        // --- ニュース取得 (プロキシ経由) ---
+        async function fetchNews() {
+            const container = document.getElementById('news-container');
+            container.innerHTML = "<p>読み込み中...</p>";
+            
+            const target = `https://newsapi.org/v2/top-headlines?country=jp&category=technology&apiKey=${NEWS_API_KEY}`;
+            
             try {
-                calcVal = eval(calcVal.replace('×', '*')).toString();
-                document.getElementById('calc-display').value = calcVal;
-            } catch {
-                document.getElementById('calc-display').value = "Error";
-                calcVal = "";
+                const res = await fetch(PROXY_URL + encodeURIComponent(target));
+                const data = await res.json();
+                
+                if (data.articles && data.articles.length > 0) {
+                    container.innerHTML = data.articles.slice(0, 6).map(art => `
+                        <div class="card">
+                            <img src="${art.urlToImage || 'https://via.placeholder.com/300x169?text=No+Image'}" onerror="this.src='https://via.placeholder.com/300x169?text=Image+Error'">
+                            <h4 style="font-size:0.9rem;">${art.title}</h4>
+                            <a href="${art.url}" target="_blank" style="color:var(--scratch-blue); font-size:0.75rem; text-decoration:none; margin-top:auto; padding-top:10px;">続きを読む →</a>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = "<p>ニュースがありません。</p>";
+                }
+            } catch (e) {
+                container.innerHTML = "<p>取得エラー。F5キーで再試行してください。</p>";
+                console.error(e);
             }
         }
 
-        // メモ
-        function saveMemo() {
-            localStorage.setItem('nh_memo_v2', document.getElementById('memo-area').value);
-            alert("保存しました。");
+        // --- 天気取得 ---
+        async function fetchWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true');
+                const d = await res.json();
+                const temp = d.current_weather.temperature;
+                document.getElementById('weather-text').innerText = `Tokyo: ${temp}°C`;
+            } catch (e) {
+                document.getElementById('weather-text').innerText = "Tokyo: --°C";
+            }
         }
+
+        // --- 便利ツール ---
+        let calcVal = "";
+        function pressCalc(v) { calcVal += v; document.getElementById('calc-display').value = calcVal; }
+        function clearCalc() { calcVal = ""; document.getElementById('calc-display').value = "0"; }
+        function calculate() { try { calcVal = eval(calcVal.replace('×', '*')).toString(); document.getElementById('calc-display').value = calcVal; } catch { clearCalc(); } }
+
+        function saveMemo() { localStorage.setItem('nh_memo_v2', document.getElementById('memo-area').value); alert("保存しました"); }
         document.getElementById('memo-area').value = localStorage.getItem('nh_memo_v2') || "";
 
-        // タイマー
         function startTimer() {
             const sec = document.getElementById('timer-sec').value;
-            if(!sec) return alert("秒数を入れてください");
+            if(!sec) return;
             alert(sec + "秒のタイマーを開始。");
             setTimeout(() => alert("⏰ 時間です！"), sec * 1000);
         }
 
-        // 検索
+        // --- 検索 ---
         document.getElementById('js-search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             document.querySelectorAll('.scratch-project').forEach(p => {
@@ -253,91 +274,15 @@
             });
         });
 
-<script>
-    // --- API設定 ---
-    const YOUR_KEY = "312c3568831b4fb588b1ab9daeeecd1f";
-    // ブラウザのブロックを回避するための中継URLを追加
-    const NEWS_API_URL = `https://newsapi.org/v2/top-headlines?country=jp&category=technology&apiKey=${YOUR_KEY}`;
-    const CORS_PROXY = "https://api.allorigins.win/raw?url="; // これでエラーを防ぎます
-
-    function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
-
-    // ニュース取得機能
-    async function fetchNews() {
-        const container = document.getElementById('news-container');
-        container.innerHTML = "<p>読み込み中...</p>";
-        
-        try {
-            // プロキシ経由でNewsAPIを叩く
-            const res = await fetch(CORS_PROXY + encodeURIComponent(NEWS_API_URL));
-            const data = await res.json();
-            
-            if (data.articles && data.articles.length > 0) {
-                container.innerHTML = data.articles.slice(0, 6).map(art => `
-                    <div class="card">
-                        <img src="${art.urlToImage || 'https://via.placeholder.com/300x169?text=No+Image'}" onerror="this.src='https://via.placeholder.com/300x169?text=No+Image'">
-                        <h4 style="margin-top:10px; font-size:0.9rem;">${art.title}</h4>
-                        <a href="${art.url}" target="_blank" style="color:var(--scratch-blue); font-size:0.7rem; text-decoration:none; display:block; margin-top:10px;">続きを読む →</a>
-                    </div>
-                `).join('');
-            } else {
-                container.innerHTML = "<p>ニュースが取得できませんでした。キーの制限を確認してください。</p>";
-            }
-        } catch (e) {
-            container.innerHTML = "<p>読み込みエラー。更新ボタンを押してみてください。</p>";
-            console.error("News Error:", e);
-        }
-    }
-
-    // 天気取得機能 (Open-Meteoを使用)
-    async function fetchWeather() {
-        const weatherEl = document.getElementById('weather-text');
-        try {
-            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true');
-            const d = await res.json();
-            const temp = d.current_weather.temperature;
-            const code = d.current_weather.weathercode;
-            
-            // 天気コードをアイコンに変換（簡易版）
-            let icon = "☁️";
-            if (code === 0) icon = "☀️";
-            if (code >= 1 && code <= 3) icon = "🌤";
-            if (code >= 61 && code <= 67) icon = "☔";
-
-            weatherEl.innerText = `Tokyo: ${icon} ${temp}°C`;
-        } catch (e) {
-            weatherEl.innerText = "Tokyo: --°C";
-        }
-    }
-
-    // ページ読み込み時の処理
-    window.addEventListener('DOMContentLoaded', () => {
-        fetchWeather();
-        updateStatus();
-    });
-
-    // --- 他の機能（電卓・メモ・検索等）はそのまま維持 ---
-    // ... (既存のコードをここに続けてください)
-</script>
-
-// ページ読み込み時に実行
-window.onload = () => {
-    fetchWeather();
-    updateStatus();
-    // ニュースは「ニュース」タブをクリックした時に実行されますが、
-    // 最初に見せたい場合はここでも fetchNews() を呼ぶと良いです。
-};
-
-        // ステータス (17:00-22:00受付)
+        // --- ステータス ---
         function updateStatus() {
             const hr = new Date().getHours();
             const el = document.getElementById('contact-status');
-            if (hr >= 17 && hr < 22) { el.innerText = "🟢 お問い合わせ受付中"; el.className = "status-badge status-on"; }
-            else { el.innerText = "🔴 時間外 (17:00-22:00受付)"; el.className = "status-badge status-off"; }
+            if (hr >= 17 && hr < 22) { el.innerText = "🟢 受付中"; el.className = "status-badge status-on"; }
+            else { el.innerText = "🔴 時間外 (17:00-22:00)"; el.className = "status-badge status-off"; }
         }
-        updateStatus();
 
-        // いいね
+        // --- いいね ---
         let likes = parseInt(localStorage.getItem('nh_likes')) || 0;
         document.getElementById('like-count').innerText = likes;
         function sendLike() {
@@ -345,8 +290,12 @@ window.onload = () => {
             document.getElementById('like-count').innerText = likes;
             localStorage.setItem('nh_likes', likes);
         }
+
+        // 初期実行
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchWeather();
+            updateStatus();
+        });
     </script>
 </body>
 </html>
-
-
