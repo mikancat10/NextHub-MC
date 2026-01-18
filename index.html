@@ -226,7 +226,7 @@
                 return;
             }
             try {
-                const res = await fetch(NEWS_FULL_URL);
+                const res = await fetch(312c3568831b4fb588b1ab9daeeecd1f);
                 const data = await res.json();
                 container.innerHTML = data.articles.slice(0, 6).map(art => `
                     <div class="card">
@@ -302,3 +302,4 @@
     </script>
 </body>
 </html>
+
