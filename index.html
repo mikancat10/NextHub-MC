@@ -312,8 +312,8 @@
         function updateStatus() {
             const hr = new Date().getHours();
             const el = document.getElementById('contact-status');
-            if (hr >= 14 && hr < 22) { el.innerText = "🟢 お問い合わせ受付中"; el.className = "status-badge status-on"; }
-            else { el.innerText = "🔴 時間外 (14:00-22:00受付)"; el.className = "status-badge status-off"; }
+            if (hr >= 17 && hr < 22) { el.innerText = "🟢 お問い合わせ受付中"; el.className = "status-badge status-on"; }
+            else { el.innerText = "🔴 時間外 (17:00-22:00受付)"; el.className = "status-badge status-off"; }
         }
         updateStatus();
 
@@ -328,6 +328,7 @@
     </script>
 </body>
 </html>
+
 
 
 
