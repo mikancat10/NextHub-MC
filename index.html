@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXT-HUB | Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
     <style>
@@ -29,65 +28,67 @@
         /* ナビゲーション */
         #home-radio, #tools-radio, #sidebar-check { display: none !important; }
         nav { padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--bg-nav); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
-        .nav-left { display: flex; align-items: center; gap: 15px; }
         .logo { font-weight: 700; font-size: 1.3rem; letter-spacing: 1px; }
-        .menu-icon { cursor: pointer; font-size: 1.5rem; transition: 0.3s; }
-        .menu-icon:hover { color: var(--scratch-blue); }
         .search-box { background: #222; border: 1px solid #333; padding: 8px 15px; border-radius: 20px; color: #fff; width: 180px; outline: none; transition: 0.3s; }
         .search-box:focus { width: 240px; border-color: var(--scratch-blue); }
 
         /* サイドバー */
-        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: var(--bg-sidebar); z-index: 150; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 80px 20px; border-right: 1px solid var(--border-color); }
+        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: var(--bg-sidebar); z-index: 150; transition: 0.4s; padding: 80px 20px; border-right: 1px solid var(--border-color); }
         #sidebar-check:checked ~ .sidebar { left: 0; }
-        .sidebar-item { display: block; color: var(--text-main); text-decoration: none; padding: 15px 10px; border-bottom: 1px solid var(--border-color); cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; }
-        .sidebar-item:hover { background: #222; padding-left: 20px; color: var(--scratch-blue); }
+        .sidebar-item { display: block; color: var(--text-main); text-decoration: none; padding: 15px 10px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
+        .sidebar-item:hover { background: #222; color: var(--scratch-blue); }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 140; display: none; }
         #sidebar-check:checked ~ .overlay { display: block; }
 
         /* ヘッダー */
-        header { text-align: center; padding: 50px 20px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); }
+        header { text-align: center; padding: 40px 20px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); }
         .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; }
         .status-on { background: rgba(46, 204, 113, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
         .status-off { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
 
-        /* 無限スライダー */
-        .swiper { width: 100%; padding: 40px 0; border-bottom: 1px solid var(--border-color); }
-        .swiper-wrapper { transition-timing-function: linear !important; }
-        .swiper-slide { width: 280px; cursor: pointer; }
-        .swiper-slide img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border-color); transition: 0.3s; }
+        /* スライダー画像サイズ修正 */
+        .swiper { width: 100%; padding: 30px 0; border-bottom: 1px solid var(--border-color); }
+        .swiper-slide { width: 240px; cursor: pointer; }
+        .swiper-slide img { 
+            width: 100%; 
+            height: 160px; /* 固定の高さ */
+            object-fit: cover; /* 縦横比を維持して切り抜き */
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
         .swiper-slide:hover img { border-color: var(--scratch-blue); transform: scale(1.05); }
-        .swiper-scrollbar { background: rgba(255,255,255,0.1) !important; bottom: 10px !important; }
-        .swiper-scrollbar-drag { background: var(--scratch-blue) !important; }
 
         /* 詳細モーダル */
-        .detail-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-card); border: 1px solid var(--border-color); padding: 30px; border-radius: 20px; z-index: 2000; display: none; width: 90%; max-width: 500px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); text-align: center; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; display: none; }
+        .detail-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-card); border: 1px solid var(--border-color); padding: 30px; border-radius: 20px; z-index: 2000; display: none; width: 90%; max-width: 500px; text-align: center; }
 
-        /* コンテンツ制御 */
+        /* プロジェクトカード画像サイズ修正 */
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 5%; }
-        .page-content { display: none; animation: fadeIn 0.4s ease-out; }
+        .page-content { display: none; animation: fadeIn 0.4s; }
         #home-radio:checked ~ .container #home-page,
         #tools-radio:checked ~ .container #tools-page { display: block; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; transition: 0.3s; position: relative; overflow: hidden; }
-        .card:hover { border-color: #555; transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card img { width: 100%; border-radius: 10px; aspect-ratio: 16/9; object-fit: cover; margin-bottom: 18px; border: 1px solid #333; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; transition: 0.3s; }
+        .card img { 
+            width: 100%; 
+            aspect-ratio: 4 / 3; /* Scratchの標準サイズに合わせる */
+            object-fit: cover; 
+            border-radius: 10px; 
+            margin-bottom: 15px;
+            border: 1px solid #333;
+        }
         .search-hide { display: none !important; }
 
-        /* 電卓・ツールパーツ */
-        .calc-display { width: 100%; padding: 15px; background: #000; color: var(--accent-green); text-align: right; font-size: 1.8rem; border-radius: 8px; margin-bottom: 15px; font-family: 'Courier New', monospace; border: 1px solid #333; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btn { padding: 15px; border: none; border-radius: 8px; background: #2a2a2a; color: white; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: 0.2s; }
-        .calc-btn:hover { background: #3d3d3d; }
-        .calc-btn.op { background: #3a3a3a; color: var(--scratch-blue); }
-
-        .btn { padding: 12px 24px; border-radius: 10px; cursor: pointer; border: none; font-weight: 700; text-decoration: none; display: inline-block; text-align: center; transition: 0.3s; }
+        /* ツールパーツ */
+        .calc-display { width: 100%; padding: 15px; background: #000; color: var(--accent-green); text-align: right; font-size: 1.5rem; border-radius: 8px; margin-bottom: 10px; border: 1px solid #333; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .calc-btn { padding: 12px; border: none; border-radius: 6px; background: #2a2a2a; color: white; cursor: pointer; }
+        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s; }
         .btn-blue { background: var(--scratch-blue); color: white; width: 100%; }
-        .btn-blue:hover { filter: brightness(1.2); }
-        .btn-like { background: var(--like-color); color: white; border-radius: 50px; font-size: 0.9rem; padding: 8px 20px; }
+        .btn-like { background: var(--like-color); color: white; border-radius: 50px; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -98,157 +99,116 @@
 
     <nav>
         <div class="nav-left">
-            <label for="sidebar-check" class="menu-icon">☰</label>
-            <div class="logo">NEXT-HUB</div>
+            <label for="sidebar-check" style="cursor:pointer; font-size:1.5rem;">☰</label>
+            <div class="logo" style="margin-left:15px;">NEXT-HUB</div>
         </div>
-        <div class="nav-right">
-            <input type="text" id="js-search" class="search-box" placeholder="作品を検索...">
-        </div>
+        <input type="text" id="js-search" class="search-box" placeholder="作品を検索...">
     </nav>
 
     <aside class="sidebar">
         <label for="home-radio" class="sidebar-item" onclick="closeSidebar()">🏠 ホーム</label>
         <label for="tools-radio" class="sidebar-item" onclick="closeSidebar()">🛠 便利ツール</label>
-        <div style="margin-top: 20px; padding: 10px; font-size: 0.8rem; color: #555; border-top: 1px solid #222;">
-            NewsAPI is disabled
-        </div>
     </aside>
     <label for="sidebar-check" class="overlay"></label>
 
     <header>
-        <div id="weather-text" style="font-size: 0.9rem; margin-bottom: 5px; color: var(--accent-green);">Tokyo: --°C</div>
-        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">NEXT-HUB Portal</h1>
-        <div id="contact-status" class="status-badge">確認中...</div>
-        <br>
+        <div id="weather-text" style="color: var(--accent-green); font-size: 0.9rem;">Tokyo: --°C</div>
+        <h1 style="margin: 10px 0;">NEXT-HUB Portal</h1>
+        <div id="contact-status" class="status-badge">確認中...</div><br>
         <button class="btn btn-like" onclick="sendLike()">❤ <span id="like-count">0</span> Likes</button>
     </header>
 
     <div class="swiper">
         <div class="swiper-wrapper">
-            <div class="swiper-slide" data-title="Scratch Account" data-text="ページ作成者のマイプロフィールです。最新作品を多数公開中。">
-                <img src="ScratchAccount.png" alt="Profile">
-            </div>
-            <div class="swiper-slide" data-title="協力者1: nekokuesuto" data-text="nekokuesutoさんのプロフィールです。開発を支える重要なメンバー。">
-                <img src="ScratchAccount2.png" alt="nekokuesuto">
-            </div>
-            <div class="swiper-slide" data-title="協力者2: SAKURAmaru_0396" data-text="SAKURAmaru_0396さんのプロフィールです。デザイン面での貢献に感謝！">
-                <img src="ScratchAccount3.png" alt="SAKURAmaru">        
-            </div>
-            <div class="swiper-slide" data-title="Information" data-text="このポータルはScratch作品を快適に閲覧・利用するために作られました。">
-                <img src="https://picsum.photos/600/400?random=10" alt="Info">
-            </div>
+            <div class="swiper-slide" data-title="Scratch Account" data-text="作者のプロフィール。"><img src="ScratchAccount.png"></div>
+            <div class="swiper-slide" data-title="協力者1" data-text="nekokuesuto氏。"><img src="ScratchAccount2.png"></div>
+            <div class="swiper-slide" data-title="協力者2" data-text="SAKURAmaru_0396氏。"><img src="ScratchAccount3.png"></div>
         </div>
         <div class="swiper-scrollbar"></div>
     </div>
 
-    <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
     <div class="detail-modal" id="detail-modal">
-        <h2 id="modal-title" style="margin-bottom: 15px; color: var(--scratch-blue);"></h2>
-        <p id="modal-text" style="color: var(--text-sub); margin-bottom: 20px;"></p>
+        <h2 id="modal-title" style="color:var(--scratch-blue); margin-bottom:10px;"></h2>
+        <p id="modal-text" style="margin-bottom:20px;"></p>
         <button class="btn btn-blue" onclick="closeModal()">閉じる</button>
     </div>
-    
+
     <main class="container">
         <div id="home-page" class="page-content">
-            <h2 style="margin-bottom:25px; font-size: 1.5rem;">📂 プロジェクトリスト</h2>
-            <div class="grid" id="project-list">
+            <h2 style="margin-bottom:20px;">📂 作品一覧</h2>
+            <div class="grid">
                 <div class="card scratch-project">
                     <img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png">
-                    <h3 style="margin-bottom:10px;">ブレインロット クリッカー</h3>
-                    <a href="https://scratch.mit.edu/projects/1259915297/" class="btn btn-blue" target="_blank">プロジェクトを開く</a>
+                    <h3>ブレインロット クリッカー</h3>
+                    <a href="https://scratch.mit.edu/projects/1259915297/" class="btn btn-blue" target="_blank">開く</a>
                 </div>
                 <div class="card scratch-project">
                     <img src="https://scratch.mit.edu/get_image/project/307476661_480x360.png">
-                    <h3 style="margin-bottom:10px;">3D Open World</h3>
-                    <a href="https://scratch.mit.edu/projects/307476661/" class="btn btn-blue" target="_blank">プロジェクトを開く</a>
+                    <h3>3D Open World</h3>
+                    <a href="https://scratch.mit.edu/projects/307476661/" class="btn btn-blue" target="_blank">開く</a>
                 </div>
                 <div class="card scratch-project">
                     <img src="https://uploads.scratch.mit.edu/get_image/project/1163188471_480x360.png">
-                    <h3 style="margin-bottom:10px;">オレンジピンポン</h3>
-                    <a href="https://scratch.mit.edu/projects/1163188471/" class="btn btn-blue" target="_blank">プロジェクトを開く</a>
+                    <h3>オレンジピンポン</h3>
+                    <a href="https://scratch.mit.edu/projects/1163188471/" class="btn btn-blue" target="_blank">開く</a>
                 </div>
                 <div class="card scratch-project">
                     <img src="https://uploads.scratch.mit.edu/get_image/project/1134606936_480x360.png">
-                    <h3 style="margin-bottom:10px;">便利ツール (Scratch版)</h3>
-                    <a href="https://scratch.mit.edu/projects/1134606936/" class="btn btn-blue" target="_blank">プロジェクトを開く</a>
+                    <h3>便利ツール (Scratch版)</h3>
+                    <a href="https://scratch.mit.edu/projects/1134606936/" class="btn btn-blue" target="_blank">開く</a>
                 </div>
                 <div class="card scratch-project">
                     <img src="https://uploads.scratch.mit.edu/get_image/project/1261118333_480x360.png">
-                    <h3 style="margin-bottom:10px;">立ち絵作ったよー！</h3>
-                    <a href="https://scratch.mit.edu/projects/1261118333/" class="btn btn-blue" target="_blank">プロジェクトを開く</a>
+                    <h3>立ち絵作ったよー！</h3>
+                    <a href="https://scratch.mit.edu/projects/1261118333/" class="btn btn-blue" target="_blank">開く</a>
                 </div>
                 <div class="card scratch-project">
                     <img src="https://uploads.scratch.mit.edu/get_image/project/1238399568_480x360.png">
-                    <h3 style="margin-bottom:10px;">Get The Frog Out Of Here!</h3>
-                    <a href="https://scratch.mit.edu/projects/1238399568/" class="btn btn-blue" target="_blank">プロジェクトを開く</a>
+                    <h3>Get The Frog Out Of Here!</h3>
+                    <a href="https://scratch.mit.edu/projects/1238399568/" class="btn btn-blue" target="_blank">開く</a>
                 </div>
             </div>
         </div>
 
         <div id="tools-page" class="page-content">
-            <h2 style="margin-bottom:25px; font-size: 1.5rem;">🛠 統合便利ツール</h2>
+            <h2>🛠 ツール</h2>
             <div class="grid">
                 <div class="card">
-                    <h3 style="margin-bottom:15px;">🔢 高速電卓</h3>
+                    <h3>🔢 電卓</h3>
                     <input type="text" id="calc-display" class="calc-display" readonly value="0">
                     <div class="calc-grid">
-                        <button class="calc-btn op" onclick="clearCalc()">C</button>
-                        <button class="calc-btn op" onclick="pressCalc('/')">/</button>
-                        <button class="calc-btn op" onclick="pressCalc('*')">×</button>
-                        <button class="calc-btn op" onclick="pressCalc('-')">-</button>
+                        <button class="calc-btn" onclick="clearCalc()">C</button>
+                        <button class="calc-btn" onclick="pressCalc('/')">/</button>
+                        <button class="calc-btn" onclick="pressCalc('*')">×</button>
+                        <button class="calc-btn" onclick="calculate()">=</button>
                         <button class="calc-btn" onclick="pressCalc('7')">7</button>
                         <button class="calc-btn" onclick="pressCalc('8')">8</button>
                         <button class="calc-btn" onclick="pressCalc('9')">9</button>
-                        <button class="calc-btn op" onclick="pressCalc('+')">+</button>
-                        <button class="calc-btn" onclick="pressCalc('4')">4</button>
-                        <button class="calc-btn" onclick="pressCalc('5')">5</button>
-                        <button class="calc-btn" onclick="pressCalc('6')">6</button>
-                        <button class="calc-btn" onclick="calculate()" style="background:var(--accent-green); color:black; grid-row: span 2;">=</button>
-                        <button class="calc-btn" onclick="pressCalc('1')">1</button>
-                        <button class="calc-btn" onclick="pressCalc('2')">2</button>
-                        <button class="calc-btn" onclick="pressCalc('3')">3</button>
-                        <button class="calc-btn" onclick="pressCalc('0')" style="grid-column: span 2;">0</button>
-                        <button class="calc-btn" onclick="pressCalc('.')">.</button>
+                        <button class="calc-btn" onclick="pressCalc('+')">+</button>
                     </div>
                 </div>
                 <div class="card">
-                    <h3 style="margin-bottom:15px;">📝 ローカルメモ</h3>
-                    <textarea id="memo-area" placeholder="メモを入力..." style="width:100%; height:200px; background:#000; color:#fff; border:1px solid #333; padding:15px; border-radius:10px; resize:none; outline:none; font-size: 0.9rem;"></textarea>
-                    <button onclick="saveMemo()" class="btn btn-blue" style="margin-top:15px;">メモを保存</button>
-                </div>
-                <div class="card">
-                    <h3 style="margin-bottom:15px;">⏰ クイックタイマー</h3>
-                    <div style="display:flex; gap:10px;">
-                        <input type="number" id="timer-sec" placeholder="秒" style="flex:1; background:#000; color:#fff; border:1px solid #333; padding:12px; border-radius:8px;">
-                        <button onclick="startTimer()" class="btn" style="background:var(--accent-green); color:black;">開始</button>
-                    </div>
-                    <hr style="margin:25px 0; border:0; border-top:1px solid #333;">
-                    <h3 style="margin-bottom:15px;">🔗 クイックリンク</h3>
-                    <div style="display:grid; gap:10px;">
-                        <a href="https://scratch.mit.edu/" target="_blank" class="btn" style="background:#4d97ff15; color:var(--scratch-blue); border:1px solid var(--scratch-blue);">Scratch公式サイト</a>
-                        <a href="https://translate.google.co.jp/" target="_blank" class="btn" style="background:#4285F415; color:#4285F4; border:1px solid #4285F4;">Google 翻訳</a>
-                    </div>
+                    <h3>📝 メモ</h3>
+                    <textarea id="memo-area" style="width:100%; height:100px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px;"></textarea>
+                    <button onclick="saveMemo()" class="btn btn-blue" style="margin-top:10px;">保存</button>
                 </div>
             </div>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
     <script>
-        // サイドバー制御
         function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
-
-        // 天気取得
+        
+        // 天気・ステータス
         async function fetchWeather() {
             try {
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true');
                 const d = await res.json();
                 document.getElementById('weather-text').innerText = `Tokyo: ${d.current_weather.temperature}°C`;
-            } catch (e) { document.getElementById('weather-text').innerText = "Tokyo: --°C"; }
+            } catch (e) { }
         }
 
-        // 受付ステータス
         function updateStatus() {
             const hr = new Date().getHours();
             const el = document.getElementById('contact-status');
@@ -256,58 +216,35 @@
             else { el.innerText = "🔴 時間外 (17:00-22:00)"; el.className = "status-badge status-off"; }
         }
 
-        // スライダー初期化
+        // スライダー
         const swiper = new Swiper('.swiper', {
-            loop: true,
-            speed: 6000,
-            slidesPerView: 'auto',
-            spaceBetween: 25,
-            freeMode: true,
-            autoplay: { delay: 0, disableOnInteraction: false },
+            loop: true, speed: 6000, slidesPerView: 'auto', spaceBetween: 20,
+            freeMode: true, autoplay: { delay: 0, disableOnInteraction: false },
             scrollbar: { el: '.swiper-scrollbar', draggable: true },
         });
 
-        // モーダル詳細表示
-        const modal = document.getElementById('detail-modal');
-        const overlay = document.getElementById('modal-overlay');
-        const mTitle = document.getElementById('modal-title');
-        const mText = document.getElementById('modal-text');
-
+        // モーダル
         document.querySelectorAll('.swiper-slide').forEach(slide => {
             slide.addEventListener('click', () => {
                 swiper.autoplay.stop();
-                mTitle.innerText = slide.getAttribute('data-title');
-                mText.innerText = slide.getAttribute('data-text');
-                modal.style.display = 'block';
-                overlay.style.display = 'block';
+                document.getElementById('modal-title').innerText = slide.getAttribute('data-title');
+                document.getElementById('modal-text').innerText = slide.getAttribute('data-text');
+                document.getElementById('detail-modal').style.display = 'block';
             });
         });
+        function closeModal() { document.getElementById('detail-modal').style.display = 'none'; swiper.autoplay.start(); }
 
-        function closeModal() {
-            modal.style.display = 'none';
-            overlay.style.display = 'none';
-            swiper.autoplay.start();
-        }
-
-        // 電卓機能
+        // 電卓
         let calcVal = "0";
         function pressCalc(v) { if(calcVal === "0") calcVal = ""; calcVal += v; document.getElementById('calc-display').value = calcVal; }
         function clearCalc() { calcVal = "0"; document.getElementById('calc-display').value = "0"; }
-        function calculate() { try { calcVal = eval(calcVal).toString(); document.getElementById('calc-display').value = calcVal; } catch { clearCalc(); document.getElementById('calc-display').value = "Error"; } }
+        function calculate() { try { calcVal = eval(calcVal).toString(); document.getElementById('calc-display').value = calcVal; } catch { clearCalc(); } }
 
-        // メモ保存
-        function saveMemo() { localStorage.setItem('nh_memo_final', document.getElementById('memo-area').value); alert("ブラウザに保存しました！"); }
-        document.getElementById('memo-area').value = localStorage.getItem('nh_memo_final') || "";
+        // メモ
+        function saveMemo() { localStorage.setItem('nh_memo', document.getElementById('memo-area').value); alert("保存しました"); }
+        document.getElementById('memo-area').value = localStorage.getItem('nh_memo') || "";
 
-        // タイマー
-        function startTimer() {
-            const sec = document.getElementById('timer-sec').value;
-            if(!sec) return;
-            alert(`${sec}秒のタイマーをセットしました。`);
-            setTimeout(() => { alert("⏰ 時間になりました！"); }, sec * 1000);
-        }
-
-        // 検索機能
+        // 検索
         document.getElementById('js-search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             document.querySelectorAll('.scratch-project').forEach(p => {
@@ -316,17 +253,12 @@
             });
         });
 
-        // いいね機能
+        // いいね
         let likes = parseInt(localStorage.getItem('nh_likes')) || 0;
         document.getElementById('like-count').innerText = likes;
-        function sendLike() {
-            likes++;
-            document.getElementById('like-count').innerText = likes;
-            localStorage.setItem('nh_likes', likes);
-        }
+        function sendLike() { likes++; document.getElementById('like-count').innerText = likes; localStorage.setItem('nh_likes', likes); }
 
         window.onload = () => { fetchWeather(); updateStatus(); };
     </script>
 </body>
 </html>
-
