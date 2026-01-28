@@ -75,6 +75,68 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<style>
+/* 既存のCSSの最後に追加 */
+
+/* スライダー全体のカスタマイズ */
+.swiper {
+    width: 100%;
+    padding: 30px 0 50px;
+}
+.swiper-wrapper {
+    transition-timing-function: linear !important; /* 滑らかに動かす */
+}
+.swiper-slide {
+    width: 280px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+.swiper-slide:hover {
+    transform: translateY(-10px);
+}
+.swiper-slide img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+/* スクロールバーの色調整 */
+.swiper-scrollbar {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+.swiper-scrollbar-drag {
+    background: var(--scratch-blue) !important;
+}
+
+/* 詳細表示ポップアップ（モーダル） */
+.detail-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    border-radius: 20px;
+    z-index: 2000;
+    display: none;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    text-align: center;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1999;
+    display: none;
+}
+</style>
 </head>
 <body>
 
@@ -108,6 +170,34 @@
         <br>
         <button class="btn btn-like" onclick="sendLike()">❤ <span id="like-count">0</span> Likes</button>
     </header>
+
+    <div class="swiper">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide" data-title="Scratch Account" data-text="マイプロフィールの紹介です。最新の作品はこちらからチェック！">
+            <img src="ScratchAccount.png" alt="Image 1">
+        </div>
+        <div class="swiper-slide" data-title="プロジェクト 02" data-text="ここに詳細な説明文が入ります。">
+            <img src="image2.jpg" alt="Image 2">
+        </div>
+        <div class="swiper-slide" data-title="プロジェクト 03" data-text="新機能の開発状況など。">
+            <img src="image3.jpg" alt="Image 3">
+        </div>
+        <div class="swiper-slide" data-title="プロジェクト 04" data-text="デザインのリニューアル案です。">
+            <img src="image4.jpg" alt="Image 4">
+        </div>
+        <div class="swiper-slide" data-title="Scratch Account" data-text="マイプロフィールの紹介です。">
+            <img src="ScratchAccount.png" alt="Image 1">
+        </div>
+    </div>
+    <div class="swiper-scrollbar"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+<div class="detail-modal" id="detail-modal">
+    <h2 id="modal-title" style="margin-bottom: 15px; color: var(--scratch-blue);"></h2>
+    <p id="modal-text" style="color: var(--text-sub); margin-bottom: 20px;"></p>
+    <button class="btn btn-blue" onclick="closeModal()">閉じる</button>
+</div>
     
     <main class="container">
         
@@ -276,8 +366,52 @@
             updateStatus();
         };
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    // --- スライダー初期化 ---
+    const swiper = new Swiper('.swiper', {
+        loop: true,
+        speed: 6000, // 滑らかさの速度（ミリ秒）
+        slidesPerView: 'auto',
+        spaceBetween: 20,
+        freeMode: true,
+        autoplay: {
+            delay: 0,
+            disableOnInteraction: true, // 触ったら止まる
+        },
+        scrollbar: {
+            el: '.swiper-scrollbar',
+            draggable: true,
+        },
+    });
+
+    // --- 詳細表示の制御 ---
+    const modal = document.getElementById('detail-modal');
+    const overlay = document.getElementById('modal-overlay');
+    const mTitle = document.getElementById('modal-title');
+    const mText = document.getElementById('modal-text');
+
+    document.querySelectorAll('.swiper-slide').forEach(slide => {
+        slide.addEventListener('click', () => {
+            swiper.autoplay.stop(); // 動きを止める
+            mTitle.innerText = slide.getAttribute('data-title');
+            mText.innerText = slide.getAttribute('data-text');
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+        });
+    });
+
+    function closeModal() {
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+    }
+
+    // （既存の他の関数：fetchWeatherなどはそのまま残す）
+</script>
 </body>
 </html>
+
 
 
 
