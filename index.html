@@ -46,23 +46,25 @@
         .status-on { background: rgba(46, 204, 113, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
         .status-off { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
 
-        /* スライダー画像サイズ修正 */
+        /* スライダー */
         .swiper { width: 100%; padding: 30px 0; border-bottom: 1px solid var(--border-color); }
-        .swiper-slide { width: 240px; cursor: pointer; }
+        .swiper-slide { width: 260px; cursor: pointer; text-align: center; }
         .swiper-slide img { 
             width: 100%; 
-            height: 160px; /* 固定の高さ */
-            object-fit: cover; /* 縦横比を維持して切り抜き */
+            height: 150px; 
+            object-fit: cover; 
             border-radius: 12px; 
             border: 1px solid var(--border-color);
             transition: 0.3s;
         }
+        /* スライダーを等速で動かすための設定 */
+.swiper-wrapper {
+    transition-timing-function: linear !important;
+}
         .swiper-slide:hover img { border-color: var(--scratch-blue); transform: scale(1.05); }
+        .swiper-slide span { display: block; margin-top: 8px; font-size: 0.9rem; color: var(--text-sub); }
 
-        /* 詳細モーダル */
-        .detail-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-card); border: 1px solid var(--border-color); padding: 30px; border-radius: 20px; z-index: 2000; display: none; width: 90%; max-width: 500px; text-align: center; }
-
-        /* プロジェクトカード画像サイズ修正 */
+        /* グリッドレイアウト */
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 5%; }
         .page-content { display: none; animation: fadeIn 0.4s; }
         #home-radio:checked ~ .container #home-page,
@@ -70,9 +72,10 @@
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
         .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; transition: 0.3s; }
+        .card:hover { border-color: #444; transform: translateY(-5px); }
         .card img { 
             width: 100%; 
-            aspect-ratio: 4 / 3; /* Scratchの標準サイズに合わせる */
+            aspect-ratio: 4 / 3; 
             object-fit: cover; 
             border-radius: 10px; 
             margin-bottom: 15px;
@@ -80,12 +83,15 @@
         }
         .search-hide { display: none !important; }
 
-        /* ツールパーツ */
+        /* 電卓パーツ */
         .calc-display { width: 100%; padding: 15px; background: #000; color: var(--accent-green); text-align: right; font-size: 1.5rem; border-radius: 8px; margin-bottom: 10px; border: 1px solid #333; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-btn { padding: 12px; border: none; border-radius: 6px; background: #2a2a2a; color: white; cursor: pointer; }
-        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s; }
-        .btn-blue { background: var(--scratch-blue); color: white; width: 100%; }
+        .calc-btn { padding: 12px; border: none; border-radius: 6px; background: #2a2a2a; color: white; cursor: pointer; font-weight: bold; }
+        .calc-btn:hover { background: #333; }
+        .calc-btn.op { background: var(--scratch-blue); }
+
+        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s; text-align: center; }
+        .btn-blue { background: var(--scratch-blue); color: white; width: 100%; margin-top: 10px; }
         .btn-like { background: var(--like-color); color: white; border-radius: 50px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -100,7 +106,7 @@
     <nav>
         <div class="nav-left">
             <label for="sidebar-check" style="cursor:pointer; font-size:1.5rem;">☰</label>
-            <div class="logo" style="margin-left:15px;">NEXT-HUB</div>
+            <span class="logo" style="margin-left:15px;">NEXT-HUB</span>
         </div>
         <input type="text" id="js-search" class="search-box" placeholder="作品を検索...">
     </nav>
@@ -118,10 +124,33 @@
         <button class="btn btn-like" onclick="sendLike()">❤ <span id="like-count">0</span> Likes</button>
     </header>
 
-    <div class="detail-modal" id="detail-modal">
-        <h2 id="modal-title" style="color:var(--scratch-blue); margin-bottom:10px;"></h2>
-        <p id="modal-text" style="margin-bottom:20px;"></p>
-        <button class="btn btn-blue" onclick="closeModal()">閉じる</button>
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png">
+                <span>ブレインロット クリッカー</span>
+            </div>
+            <div class="swiper-slide">
+                <img src="https://scratch.mit.edu/get_image/project/307476661_480x360.png">
+                <span>3D Open World</span>
+            </div>
+            <div class="swiper-slide">
+                <img src="https://uploads.scratch.mit.edu/get_image/project/1163188471_480x360.png">
+                <span>オレンジピンポン</span>
+            </div>
+            <div class="swiper-slide">
+                <img src="https://uploads.scratch.mit.edu/get_image/project/1134606936_480x360.png">
+                <span>便利ツール (Scratch版)</span>
+            </div>
+                        <div class="swiper-slide">
+                <img src="https://uploads.scratch.mit.edu/get_image/project/1261118333_480x360.png">
+                <span>立ち絵作ったよー！</span>
+            </div>
+                        <div class="swiper-slide">
+                <img src="https://uploads.scratch.mit.edu/get_image/project/1238399568_480x360.png">
+                <span>Get The Frog Out Of Here!</span>
+            </div>
+        </div>
     </div>
 
     <main class="container">
@@ -168,20 +197,29 @@
                     <h3>🔢 電卓</h3>
                     <input type="text" id="calc-display" class="calc-display" readonly value="0">
                     <div class="calc-grid">
-                        <button class="calc-btn" onclick="clearCalc()">C</button>
-                        <button class="calc-btn" onclick="pressCalc('/')">/</button>
-                        <button class="calc-btn" onclick="pressCalc('*')">×</button>
-                        <button class="calc-btn" onclick="calculate()">=</button>
                         <button class="calc-btn" onclick="pressCalc('7')">7</button>
                         <button class="calc-btn" onclick="pressCalc('8')">8</button>
                         <button class="calc-btn" onclick="pressCalc('9')">9</button>
-                        <button class="calc-btn" onclick="pressCalc('+')">+</button>
+                        <button class="calc-btn op" onclick="pressCalc('/')">÷</button>
+                        <button class="calc-btn" onclick="pressCalc('4')">4</button>
+                        <button class="calc-btn" onclick="pressCalc('5')">5</button>
+                        <button class="calc-btn" onclick="pressCalc('6')">6</button>
+                        <button class="calc-btn op" onclick="pressCalc('*')">×</button>
+                        <button class="calc-btn" onclick="pressCalc('1')">1</button>
+                        <button class="calc-btn" onclick="pressCalc('2')">2</button>
+                        <button class="calc-btn" onclick="pressCalc('3')">3</button>
+                        <button class="calc-btn op" onclick="pressCalc('-')">-</button>
+                        <button class="calc-btn" onclick="clearCalc()">C</button>
+                        <button class="calc-btn" onclick="pressCalc('0')">0</button>
+                        <button class="calc-btn op" onclick="calculate()">=</button>
+                        <button class="calc-btn op" onclick="pressCalc('+')">+</button>
                     </div>
                 </div>
                 <div class="card">
                     <h3>📝 メモ</h3>
-                    <textarea id="memo-area" style="width:100%; height:100px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px;"></textarea>
-                    <button onclick="saveMemo()" class="btn btn-blue" style="margin-top:10px;">保存</button>
+                    <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 8px;">ブラウザに保存されます</p>
+                    <textarea id="memo-area" style="width:100%; height:160px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px; resize: none;"></textarea>
+                    <button onclick="saveMemo()" class="btn btn-blue">保存する</button>
                 </div>
             </div>
         </div>
@@ -191,66 +229,100 @@
     <script>
         function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
         
-        // 天気・ステータス
+        // 天気取得
         async function fetchWeather() {
             try {
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true');
                 const d = await res.json();
                 document.getElementById('weather-text').innerText = `Tokyo: ${d.current_weather.temperature}°C`;
-            } catch (e) { }
+            } catch (e) { document.getElementById('weather-text').innerText = "Weather unavailable"; }
         }
 
+        // 受付ステータス
         function updateStatus() {
             const hr = new Date().getHours();
             const el = document.getElementById('contact-status');
-            if (hr >= 17 && hr < 22) { el.innerText = "🟢 受付中"; el.className = "status-badge status-on"; }
-            else { el.innerText = "🔴 時間外 (17:00-22:00)"; el.className = "status-badge status-off"; }
+            // 17:00 - 22:00の間だけ「受付中」
+            if (hr >= 17 && hr < 22) { 
+                el.innerText = "🟢 受付中"; 
+                el.className = "status-badge status-on"; 
+            } else { 
+                el.innerText = "🔴 時間外 (17:00-22:00)"; 
+                el.className = "status-badge status-off"; 
+            }
         }
 
-        // スライダー
-        const swiper = new Swiper('.swiper', {
-            loop: true, speed: 6000, slidesPerView: 'auto', spaceBetween: 20,
-            freeMode: true, autoplay: { delay: 0, disableOnInteraction: false },
-            scrollbar: { el: '.swiper-scrollbar', draggable: true },
-        });
+        // スライダー設定（無限ループ・自動再生）
+// スライダー設定（シームレスな等速ループ）
+const swiper = new Swiper('.swiper', {
+    loop: true,
+    speed: 6000, // 6秒かけて1周分移動（お好みの速度に調整してください）
+    slidesPerView: 'auto',
+    spaceBetween: 20,
+    allowTouchMove: true, // 手動での操作も可能
+    autoplay: {
+        delay: 0, // 止まる時間をゼロにする
+        disableOnInteraction: false,
+    },
+    freeMode: {
+        enabled: true,
+        momentum: false,
+    },
+});
 
-        // モーダル
-        document.querySelectorAll('.swiper-slide').forEach(slide => {
-            slide.addEventListener('click', () => {
-                swiper.autoplay.stop();
-                document.getElementById('modal-title').innerText = slide.getAttribute('data-title');
-                document.getElementById('modal-text').innerText = slide.getAttribute('data-text');
-                document.getElementById('detail-modal').style.display = 'block';
-            });
-        });
-        function closeModal() { document.getElementById('detail-modal').style.display = 'none'; swiper.autoplay.start(); }
-
-        // 電卓
+        // 電卓ロジック
         let calcVal = "0";
-        function pressCalc(v) { if(calcVal === "0") calcVal = ""; calcVal += v; document.getElementById('calc-display').value = calcVal; }
-        function clearCalc() { calcVal = "0"; document.getElementById('calc-display').value = "0"; }
-        function calculate() { try { calcVal = eval(calcVal).toString(); document.getElementById('calc-display').value = calcVal; } catch { clearCalc(); } }
+        function pressCalc(v) { 
+            if(calcVal === "0" && !isNaN(v)) calcVal = ""; 
+            calcVal += v; 
+            document.getElementById('calc-display').value = calcVal; 
+        }
+        function clearCalc() { 
+            calcVal = "0"; 
+            document.getElementById('calc-display').value = "0"; 
+        }
+        function calculate() { 
+            try { 
+                // 安全な計算のためにevalの代わりにFunctionを使うことも検討できますが、今回はシンプルに
+                calcVal = eval(calcVal).toString(); 
+                document.getElementById('calc-display').value = calcVal; 
+            } catch { 
+                document.getElementById('calc-display').value = "Error";
+                calcVal = "0";
+            } 
+        }
 
-        // メモ
-        function saveMemo() { localStorage.setItem('nh_memo', document.getElementById('memo-area').value); alert("保存しました"); }
+        // メモ機能
+        function saveMemo() { 
+            localStorage.setItem('nh_memo', document.getElementById('memo-area').value); 
+            alert("ブラウザにメモを保存しました！"); 
+        }
         document.getElementById('memo-area').value = localStorage.getItem('nh_memo') || "";
 
-        // 検索
+        // 検索フィルター
         document.getElementById('js-search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
+            // 検索時は自動的にホームタブを表示させる
+            document.getElementById('home-radio').checked = true;
             document.querySelectorAll('.scratch-project').forEach(p => {
                 const title = p.querySelector('h3').innerText.toLowerCase();
                 p.classList.toggle('search-hide', !title.includes(query));
             });
         });
 
-        // いいね
+        // いいね機能
         let likes = parseInt(localStorage.getItem('nh_likes')) || 0;
         document.getElementById('like-count').innerText = likes;
-        function sendLike() { likes++; document.getElementById('like-count').innerText = likes; localStorage.setItem('nh_likes', likes); }
+        function sendLike() { 
+            likes++; 
+            document.getElementById('like-count').innerText = likes; 
+            localStorage.setItem('nh_likes', likes); 
+        }
 
-        window.onload = () => { fetchWeather(); updateStatus(); };
+        window.onload = () => { 
+            fetchWeather(); 
+            updateStatus(); 
+        };
     </script>
 </body>
 </html>
-
