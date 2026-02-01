@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXT-HUB | Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
@@ -221,12 +222,128 @@
                     <textarea id="memo-area" style="width:100%; height:160px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px; resize: none;"></textarea>
                     <button onclick="saveMemo()" class="btn btn-blue">保存する</button>
                 </div>
+                <div class="card">
+    <h3>🔐 パスワード生成</h3>
+    <p id="pass-display" style="background:#000; padding:10px; border-radius:5px; margin:10px 0; font-family:monospace; word-break:break-all; border:1px solid #333;">********</p>
+    <input type="range" id="pass-length" min="8" max="32" value="12" style="width:100%;">
+    <p style="font-size:0.8rem; text-align:right;">長さ: <span id="length-val">12</span></p>
+    <button onclick="generatePass()" class="btn btn-blue">生成する</button>
+</div>
+
+<div class="card">
+    <h3>⏱ ポモドーロタイマー</h3>
+    <div id="timer-display" style="font-size: 2.5rem; text-align: center; font-weight: bold; color: var(--scratch-blue); margin: 10px 0;">25:00</div>
+    <div style="display: flex; gap: 5px;">
+        <button onclick="toggleTimer()" id="timer-btn" class="btn btn-blue" style="flex:2;">スタート</button>
+        <button onclick="resetTimer()" class="btn" style="background:#333; color:white; flex:1;">Reset</button>
+    </div>
+</div>
+<div class="card">
+    <h3>📵 超集中モード</h3>
+    <div id="focus-display" style="text-align:center; padding:20px;">
+        <div id="focus-timer" style="font-size:2rem; margin-bottom:10px;">--:--</div>
+        <p id="focus-status" style="font-size:0.8rem; color:var(--text-sub);">目的を設定してロック</p>
+    </div>
+    <div id="focus-controls">
+        <input type="text" id="focus-reason" placeholder="今から何を成し遂げる？" style="width:100%; padding:8px; background:#000; border:1px solid #333; color:#fff; border-radius:5px; margin-bottom:10px;">
+        <button onclick="startFocus()" class="btn btn-blue">集中を開始する</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3>💰 感情家計簿</h3>
+    <div style="display:flex; gap:10px; margin-bottom:10px;">
+        <input type="number" id="spend-amount" placeholder="金額" style="flex:1; background:#000; border:1px solid #333; color:#fff; padding:8px; border-radius:5px;">
+        <select id="spend-emotion" style="background:#000; border:1px solid #333; color:#fff; padding:8px; border-radius:5px;">
+            <option value="😊">最高！</option>
+            <option value="😐">普通</option>
+            <option value="😢">後悔...</option>
+        </select>
+    </div>
+    <button onclick="addSpend()" class="btn btn-blue" style="background:var(--accent-green);">記録する</button>
+    <div id="spend-history" style="margin-top:15px; max-height:100px; overflow-y:auto; font-size:0.85rem;">
+        </div>
+</div>
+<div class="card">
+    <h3>🖼 スクショ解析・分類</h3>
+    <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px;">画像を解析して情報を抽出します</p>
+    
+    <label class="btn btn-blue" style="display: block; background: #333;">
+        画像を選択
+        <input type="file" id="screenshot-input" accept="image/*" style="display:none;">
+    </label>
+
+    <div id="ocr-status" style="font-size: 0.8rem; margin-top:10px; color: var(--scratch-blue);"></div>
+    
+    <div id="analysis-result" style="margin-top:15px; display:none;">
+        <span id="category-tag" style="padding:2px 8px; border-radius:4px; font-size:0.75rem; background:var(--accent-green);">分類中...</span>
+        <textarea id="ocr-text" style="width:100%; height:80px; background:#000; color:#fff; border:1px solid #333; margin-top:10px; padding:5px; font-size:0.8rem; border-radius:5px;"></textarea>
+        <button id="copy-ocr-btn" class="btn" style="width:100%; font-size:0.8rem; margin-top:5px; background:#444; color:white;">テキストをコピー</button>
+    </div>
+</div>
+<div class="card">
+    <h3>📂 コード整理・短縮</h3>
+    <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px;">JavaScript/CSSの整形・軽量化</p>
+    
+    <textarea id="code-input" placeholder="ここにコードを貼り付け..." style="width:100%; height:120px; background:#000; color:#00ff00; border:1px solid #333; padding:10px; font-family:monospace; font-size:0.8rem; border-radius:5px; resize:vertical;"></textarea>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+        <button onclick="processCode('format')" class="btn" style="background:#444; color:white; font-size:0.8rem;">綺麗に整形</button>
+        <button onclick="processCode('minify')" class="btn btn-blue" style="font-size:0.8rem;">限界まで短縮</button>
+    </div>
+</div>
             </div>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
+
+    // --- 超集中モード ロジック ---
+let focusInterval = null;
+function startFocus() {
+    const reason = document.getElementById('focus-reason').value;
+    if (!reason) return alert("集中する目的を入力してください！");
+
+    const overlay = document.createElement('div');
+    overlay.id = 'focus-overlay';
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif;";
+    
+    overlay.innerHTML = `
+        <h1 style="margin-bottom:20px;">🔥 集中モード発動中</h1>
+        <p style="color:var(--text-sub); margin-bottom:40px;">目的: ${reason}</p>
+        <p style="font-size:0.9rem; margin-bottom:10px;">解除するには以下を正確に入力してください:</p>
+        <p style="font-weight:bold; color:var(--scratch-blue); margin-bottom:10px;">「${reason}を諦めます」</p>
+        <input type="text" id="unlock-input" placeholder="ここに理由を入力..." style="background:transparent; border:none; border-bottom:2px solid #333; color:#fff; text-align:center; font-size:1.2rem; outline:none; margin-bottom:20px;">
+        <button onclick="checkUnlock('${reason}')" class="btn" style="background:#e74c3c; color:white;">ロック解除を試みる</button>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function checkUnlock(reason) {
+    const input = document.getElementById('unlock-input').value;
+    if (input === `${reason}を諦めます`) {
+        document.getElementById('focus-overlay').remove();
+        alert("集中モードを終了しました。お疲れ様でした！");
+    } else {
+        alert("入力が正しくありません。まだ集中しましょう！");
+    }
+}
+
+// --- 感情家計簿 ロジック ---
+function addSpend() {
+    const amt = document.getElementById('spend-amount').value;
+    const emo = document.getElementById('spend-emotion').value;
+    if(!amt) return;
+
+    const history = document.getElementById('spend-history');
+    const item = document.createElement('div');
+    item.style = "display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #222;";
+    item.innerHTML = `<span>${emo} ¥${Number(amt).toLocaleString()}</span> <span style="color:var(--text-sub);">${new Date().toLocaleTimeString()}</span>`;
+    
+    history.prepend(item);
+    document.getElementById('spend-amount').value = "";
+}
         function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
         
         // 天気取得
@@ -323,6 +440,152 @@ const swiper = new Swiper('.swiper', {
             fetchWeather(); 
             updateStatus(); 
         };
+        // --- パスワード生成ロジック ---
+const passLenInput = document.getElementById('pass-length');
+const passLenVal = document.getElementById('length-val');
+passLenInput.addEventListener('input', () => passLenVal.innerText = passLenInput.value);
+
+function generatePass() {
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+    let retVal = "";
+    for (let i = 0; i < passLenInput.value; ++i) {
+        retVal += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    document.getElementById('pass-display').innerText = retVal;
+}
+
+// --- ポモドーロタイマーロジック ---
+let timeLeft = 1500; // 25分
+let timerId = null;
+
+function updateTimerDisplay() {
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    document.getElementById('timer-display').innerText = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function toggleTimer() {
+    const btn = document.getElementById('timer-btn');
+    if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+        btn.innerText = "再開";
+    } else {
+        btn.innerText = "停止";
+        timerId = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                alert("時間です！休憩しましょう。");
+                resetTimer();
+            }
+        }, 1000);
+    }
+}
+
+function resetTimer() {
+    clearInterval(timerId);
+    timerId = null;
+    timeLeft = 1500;
+    updateTimerDisplay();
+    document.getElementById('timer-btn').innerText = "スタート";
+}
+document.getElementById('screenshot-input').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const status = document.getElementById('ocr-status');
+    const resultArea = document.getElementById('analysis-result');
+    const ocrText = document.getElementById('ocr-text');
+    const tag = document.getElementById('category-tag');
+
+    status.innerText = "⌛ 解析中 (これには数秒かかります)...";
+    resultArea.style.display = "none";
+
+    try {
+        // Tesseract.jsで解析（日本語と英語に対応）
+        const { data: { text } } = await Tesseract.recognize(file, 'jpn+eng');
+        
+        status.innerText = "✅ 解析完了";
+        resultArea.style.display = "block";
+        ocrText.value = text;
+
+        // キーワードによる自動分類
+        if (text.includes("銀行") || text.includes("口座") || text.includes("振込")) {
+            tag.innerText = "💰 振込・口座情報";
+            tag.style.background = "#e67e22";
+        } else if (text.includes("店") || text.includes("予約") || text.includes("MAP") || text.includes("TEL")) {
+            tag.innerText = "📍 行きたいお店";
+            tag.style.background = "#3498db";
+        } else {
+            tag.innerText = "📝 一般メモ";
+            tag.style.background = "#2ecc71";
+        }
+
+    } catch (err) {
+        console.error(err);
+        status.innerText = "❌ 解析に失敗しました";
+    }
+});
+
+// コピー機能
+document.getElementById('copy-ocr-btn').onclick = () => {
+    const text = document.getElementById('ocr-text');
+    text.select();
+    document.execCommand('copy');
+    alert("テキストをクリップボードにコピーしました！");
+};
+function processCode(mode) {
+    const codeArea = document.getElementById('code-input');
+    let code = codeArea.value;
+
+    if (!code.trim()) return alert("コードを入力してください");
+
+    try {
+        if (mode === 'minify') {
+            // --- 強化版：限界まで短縮 ---
+            code = code
+                .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1') // コメント削除
+                .replace(/\s+([\{\}\(\)\[\]\=\+\-\*\/\;\:\,])\s*/g, '$1') // 記号周りの空白を詰める
+                .replace(/\s+/g, ' ') // 連続する空白を1つに
+                .replace(/;}/g, '}') // 最後のセミコロンを削除
+                .trim();
+            alert("コードを圧縮し、クリップボードにコピーしました！");
+        } else {
+            // --- 強化版：簡易インデント整形 ---
+            let indent = 0;
+            const spaces = "    "; // 1インデント4スペース
+            code = code
+                .replace(/\s*\{\s*/g, " {\n")
+                .replace(/\s*\}\s*/g, "\n}\n")
+                .replace(/\s*;\s*/g, ";\n")
+                .split('\n')
+                .map(line => {
+                    line = line.trim();
+                    if (line.match(/\}/)) indent--;
+                    const currentLine = (indent > 0 ? spaces.repeat(indent) : "") + line;
+                    if (line.match(/\{/)) indent++;
+                    return currentLine;
+                })
+                .join('\n')
+                .replace(/\n\s*\n/g, '\n'); // 空行を詰める
+            alert("コードを整形し、クリップボードにコピーしました！");
+        }
+
+        codeArea.value = code;
+        
+        // 自動コピー機能
+        navigator.clipboard.writeText(code).catch(err => {
+            console.error('Copy failed', err);
+        });
+
+    } catch (e) {
+        alert("処理中にエラーが発生しました。コードを確認してください。");
+    }
+}
     </script>
 </body>
 </html>
+
