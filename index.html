@@ -99,6 +99,17 @@
         .btn-like { background: var(--like-color); color: white; border-radius: 50px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card p {
+    margin-bottom: 10px;
+}
     </style>
 </head>
 <body>
@@ -220,6 +231,29 @@
                 </div>
             </div>
         </div>
+        
+<h2 style="margin: 40px 0 20px;">🐙 GitHub おすすめ Repository</h2>
+<div class="grid" id="github-repos">
+    <div class="card">
+        <div style="font-size: 2rem; margin-bottom: 10px;">⭐</div>
+        <h3>NextHub</h3>
+        <p style="font-size: 0.8rem; color: var(--text-sub); height: 50px; overflow: hidden;">NextHubのソースコード</p>
+        <div style="margin-top: 10px; font-size: 0.75rem;">
+            <span style="color: var(--scratch-blue);">● HTML</span>
+        </div>
+        <a href="https://github.com/mikancat10/NextHub-MC" class="btn btn-blue" target="_blank">Repoを見る</a>
+    </div>
+    
+    <div class="card">
+        <div style="font-size: 2rem; margin-bottom: 10px;">🚀</div>
+        <h3>MCBrowser</h3>
+        <p style="font-size: 0.8rem; color: var(--text-sub); height: 50px; overflow: hidden;">普通のブラウザ</p>
+        <div style="margin-top: 10px; font-size: 0.75rem;">
+            <span style="color: #f1e05a;">● JavaScript</span>
+        </div>
+        <a href="https://github.com/mikancat10/MCBrowser" class="btn btn-blue" target="_blank">Repoを見る</a>
+    </div>
+</div>
 
         <div id="tools-page" class="page-content">
             <h2>🛠 ツール</h2>
@@ -618,6 +652,7 @@ function processCode(mode) {
     </script>
 </body>
 </html>
+
 
 
 
