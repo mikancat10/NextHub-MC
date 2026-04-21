@@ -3,687 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXT-HUB | Portal</title>
+    <title>NEXT-HUB | Evolution</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="icon" href="favicon.ico" sizes="any">
-    <link rel="apple-touch-icon" href="favicon.ico" sizes="180x180">
-
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <style>
         :root {
-            --bg-body: #0a0a0a;
-            --bg-header: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-            --bg-card: #181818;
-            --bg-nav: rgba(13, 13, 13, 0.95);
-            --bg-sidebar: #121212;
+            --glass-bg: rgba(20, 20, 20, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-blue: #4d97ff;
+            --accent-discord: #5865F2;
+            --accent-google: #ea4335;
             --text-main: #ffffff;
-            --text-sub: #a0a0a0;
-            --border-color: #2c2c2c;
-            --scratch-blue: #4d97ff;
-            --like-color: #ff4757;
-            --accent-green: #2ecc71;
+            --text-sub: #b0b0b0;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1920') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ガラスモフィズム共通 */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
 
         /* ナビゲーション */
-        #home-radio, #tools-radio, #sidebar-check { display: none !important; }
-        nav { padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--bg-nav); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
-        .logo { font-weight: 700; font-size: 1.3rem; letter-spacing: 1px; }
-        .search-box { background: #222; border: 1px solid #333; padding: 8px 15px; border-radius: 20px; color: #fff; width: 180px; outline: none; transition: 0.3s; }
-        .search-box:focus { width: 240px; border-color: var(--scratch-blue); }
+        nav {
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(10, 10, 10, 0.8);
+        }
+
+        .logo { font-weight: 700; font-size: 1.4rem; background: linear-gradient(to right, #fff, var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* サイドバー */
-        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: var(--bg-sidebar); z-index: 150; transition: 0.4s; padding: 80px 20px; border-right: 1px solid var(--border-color); }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: rgba(15, 15, 15, 0.95);
+            z-index: 2000;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 40px 20px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+        #sidebar-check { display: none; }
         #sidebar-check:checked ~ .sidebar { left: 0; }
-        .sidebar-item { display: block; color: var(--text-main); text-decoration: none; padding: 15px 10px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
-        .sidebar-item:hover { background: #222; color: var(--scratch-blue); }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 140; display: none; }
         #sidebar-check:checked ~ .overlay { display: block; }
 
-        /* ヘッダー */
-        header { text-align: center; padding: 40px 20px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); }
-        .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; }
-        .status-on { background: rgba(46, 204, 113, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
-        .status-off { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+        .sidebar-group { margin-bottom: 30px; }
+        .sidebar-title { font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; padding-left: 10px; }
+        .sidebar-item { display: block; color: #fff; text-decoration: none; padding: 12px 15px; border-radius: 10px; transition: 0.3s; margin-bottom: 5px; cursor: pointer; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: var(--accent-blue); }
 
-        /* スライダー */
-        .swiper { width: 100%; padding: 30px 0; border-bottom: 1px solid var(--border-color); }
-        .swiper-slide { width: 260px; cursor: pointer; text-align: center; }
-        .swiper-slide img { 
-            width: 100%; 
-            height: 150px; 
-            object-fit: cover; 
-            border-radius: 12px; 
-            border: 1px solid var(--border-color);
-            transition: 0.3s;
-        }
-        /* スライダーを等速で動かすための設定 */
-.swiper-wrapper {
-    transition-timing-function: linear !important;
-}
-        .swiper-slide:hover img { border-color: var(--scratch-blue); transform: scale(1.05); }
-        .swiper-slide span { display: block; margin-top: 8px; font-size: 0.9rem; color: var(--text-sub); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1500; display: none; }
 
-        /* グリッドレイアウト */
+        /* メインレイアウト */
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 5%; }
-        .page-content { display: none; animation: fadeIn 0.4s; }
-        #home-radio:checked ~ .container #home-page,
-        #tools-radio:checked ~ .container #tools-page { display: block; }
+        .page-content { display: none; animation: fadeIn 0.5s ease forwards; }
+        
+        /* ラジオボタン制御 */
+        #radio-home:checked ~ .container #page-home,
+        #radio-scratch:checked ~ .container #page-scratch,
+        #radio-news:checked ~ .container #page-news { display: block; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; transition: 0.3s; }
-        .card:hover { border-color: #444; transform: translateY(-5px); }
-        .card img { 
-            width: 100%; 
-            aspect-ratio: 4 / 3; 
-            object-fit: cover; 
-            border-radius: 10px; 
-            margin-bottom: 15px;
-            border: 1px solid #333;
-        }
-        .search-hide { display: none !important; }
+        /* ログインセクション */
+        .login-card { text-align: center; padding: 40px; margin-bottom: 40px; }
+        .login-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+        .btn-auth { padding: 12px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; color: white; }
+        .btn-google { background: var(--accent-google); }
+        .btn-discord { background: var(--accent-discord); }
+        .btn-auth:hover { opacity: 0.8; transform: translateY(-2px); }
 
-        /* 電卓パーツ */
-        .calc-display { width: 100%; padding: 15px; background: #000; color: var(--accent-green); text-align: right; font-size: 1.5rem; border-radius: 8px; margin-bottom: 10px; border: 1px solid #333; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-btn { padding: 12px; border: none; border-radius: 6px; background: #2a2a2a; color: white; cursor: pointer; font-weight: bold; }
-        .calc-btn:hover { background: #333; }
-        .calc-btn.op { background: var(--scratch-blue); }
+        /* グリッド & カード */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { padding: 20px; transition: 0.3s; }
+        .card:hover { border-color: var(--accent-blue); transform: translateY(-5px); }
+        .card img { width: 100%; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--glass-border); }
 
-        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s; text-align: center; }
-        .btn-blue { background: var(--scratch-blue); color: white; width: 100%; margin-top: 10px; }
-        .btn-like { background: var(--like-color); color: white; border-radius: 50px; }
+        /* ニュース（Discord風） */
+        .news-item { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid var(--accent-discord); }
+        .news-meta { font-size: 0.8rem; color: var(--text-sub); display: flex; justify-content: space-between; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* 天気予報 */
+        .weather-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 20px; }
+        .weather-day { text-align: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 12px; }
 
-        .card h3 {
-    font-size: 1rem;
-    margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.card p {
-    margin-bottom: 10px;
-}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* スライダー */
+        .swiper { width: 100%; padding: 40px 0; }
+        .swiper-slide { width: 280px; text-align: center; }
+        .swiper-slide img { width: 100%; height: 160px; object-fit: cover; border-radius: 15px; border: 1px solid var(--glass-border); }
+
     </style>
 </head>
 <body>
 
-    <input type="radio" name="page" id="home-radio" checked>
-    <input type="radio" name="page" id="tools-radio">
+    <input type="radio" name="nav" id="radio-home" checked style="display:none">
+    <input type="radio" name="nav" id="radio-scratch" style="display:none">
+    <input type="radio" name="nav" id="radio-news" style="display:none">
     <input type="checkbox" id="sidebar-check">
 
     <nav>
-        <div class="nav-left">
+        <div style="display:flex; align-items:center;">
             <label for="sidebar-check" style="cursor:pointer; font-size:1.5rem;">☰</label>
-            <span class="logo" style="margin-left:15px;">NEXT-HUB</span>
+            <span class="logo" style="margin-left:20px">NEXT-HUB</span>
         </div>
-        <input type="text" id="js-search" class="search-box" placeholder="作品を検索...">
+        <div id="quick-weather" style="font-size: 0.9rem; color: var(--accent-blue);">Tokyo: Loading...</div>
     </nav>
 
     <aside class="sidebar">
-        <label for="home-radio" class="sidebar-item" onclick="closeSidebar()">🏠 ホーム</label>
-        <label for="tools-radio" class="sidebar-item" onclick="closeSidebar()">🛠 便利ツール</label>
+        <div class="sidebar-group">
+            <p class="sidebar-title">Main</p>
+            <label for="radio-home" class="sidebar-item" onclick="closeSidebar()">🏠 ホーム</label>
+            <label for="radio-news" class="sidebar-item" onclick="closeSidebar()">📢 ニュース & 天気</label>
+        </div>
+        <div class="sidebar-group">
+            <p class="sidebar-title">Creative</p>
+            <label for="radio-scratch" class="sidebar-item" onclick="closeSidebar()">😺 Scratch作品共有</label>
+            <a href="https://github.com/mikancat10" target="_blank" class="sidebar-item">🐙 GitHub Repositories</a>
+        </div>
+        <div class="sidebar-group" style="margin-top: auto;">
+            <p class="sidebar-title">Account</p>
+            <div style="padding: 10px; font-size: 0.8rem; color: var(--text-sub);">ログインして同期</div>
+        </div>
     </aside>
+
     <label for="sidebar-check" class="overlay"></label>
 
-    <header>
-        <div id="weather-text" style="color: var(--accent-green); font-size: 0.9rem;">Tokyo: --°C</div>
-        <h1 style="margin: 10px 0;">NEXT-HUB Portal</h1>
-        <div id="contact-status" class="status-badge">確認中...</div><br>
-        <button class="btn btn-like" onclick="sendLike()">❤ <span id="like-count">0</span> Likes</button>
-    </header>
-
-    <div class="swiper">
-        <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png">
-                <span>ブレインロット クリッカー</span>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://scratch.mit.edu/get_image/project/307476661_480x360.png">
-                <span>3D Open World</span>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1163188471_480x360.png">
-                <span>オレンジピンポン</span>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1134606936_480x360.png">
-                <span>便利ツール (Scratch版)</span>
-            </div>
-                        <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1261118333_480x360.png">
-                <span>立ち絵作ったよー！</span>
-            </div>
-                        <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1238399568_480x360.png">
-                <span>Get The Frog Out Of Here!</span>
-            </div>
-                                    <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/668123415_480x360.png">
-                <span>☁️アモングアス オンライン 日本語版 / Among Us Online Scratch Remake Japanese Version</span>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1239803192_480x360.png">
-                <span>スクラムス / SCRAMNS</span>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/461556734_480x360.png">
-                <span>3D跑酷！3Dパルクール　3D Parkour</span>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1068813565_480x360.png">
-                <span>フヒフムさんのオープニング再現！滑らか版</span>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/554466917_480x360.png">
-                <span>Box Brothers Plus</span>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1229242091_480x360.png">
-                <span>Pixel Parachute</span>
-            </div>
-        </div>
-    </div>
-
     <main class="container">
-        <div id="home-page" class="page-content">
-            <h2 style="margin-bottom:20px;">📂 作品一覧</h2>
+        
+        <section id="page-home" class="page-content">
+            <div class="glass login-card">
+                <h2>Welcome to NEXT-HUB</h2>
+                <p style="color: var(--text-sub); margin-top: 10px;">プロジェクトを管理し、最新情報を手に入れよう</p>
+                <div class="login-buttons">
+                    <button class="btn-auth btn-google">Googleでログイン</button>
+                    <button class="btn-auth btn-discord">Discordでログイン</button>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 20px;">管理者おすすめのプロジェクト</h3>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"><img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png"><span>ブレインロット</span></div>
+                    <div class="swiper-slide"><img src="https://scratch.mit.edu/get_image/project/307476661_480x360.png"><span>3D Open World</span></div>
+                    <div class="swiper-slide"><img src="https://uploads.scratch.mit.edu/get_image/project/1163188471_480x360.png"><span>オレンジピンポン</span></div>
+                    <div class="swiper-slide"><img src="https://uploads.scratch.mit.edu/get_image/project/1239803192_480x360.png"><span>SCRAMNS</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-scratch" class="page-content">
+            <h2 style="margin-bottom: 20px;">📂 Scratch Project Hub</h2>
             <div class="grid">
-                <div class="card scratch-project">
+                <div class="glass card">
                     <img src="https://scratch.mit.edu/get_image/project/1259915297_480x360.png">
                     <h3>ブレインロット クリッカー</h3>
-                    <a href="https://scratch.mit.edu/projects/1259915297/" class="btn btn-blue" target="_blank">開く</a>
+                    <p style="font-size:0.8rem; color:var(--text-sub);">Admin Recommended</p>
+                    <a href="https://scratch.mit.edu/projects/1259915297/" class="btn-auth btn-discord" style="margin-top:15px; text-decoration:none; justify-content:center;">Scratchで開く</a>
                 </div>
-                <div class="card scratch-project">
-                    <img src="https://scratch.mit.edu/get_image/project/307476661_480x360.png">
-                    <h3>3D Open World</h3>
-                    <a href="https://scratch.mit.edu/projects/307476661/" class="btn btn-blue" target="_blank">開く</a>
                 </div>
-                <div class="card scratch-project">
-                    <img src="https://uploads.scratch.mit.edu/get_image/project/1163188471_480x360.png">
-                    <h3>オレンジピンポン</h3>
-                    <a href="https://scratch.mit.edu/projects/1163188471/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                    <img src="https://uploads.scratch.mit.edu/get_image/project/1134606936_480x360.png">
-                    <h3>便利ツール (Scratch版)</h3>
-                    <a href="https://scratch.mit.edu/projects/1134606936/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                    <img src="https://uploads.scratch.mit.edu/get_image/project/1261118333_480x360.png">
-                    <h3>立ち絵作ったよー！</h3>
-                    <a href="https://scratch.mit.edu/projects/1261118333/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                    <img src="https://uploads.scratch.mit.edu/get_image/project/1238399568_480x360.png">
-                    <h3>Get The Frog Out Of Here!</h3>
-                    <a href="https://scratch.mit.edu/projects/1238399568/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/668123415_480x360.png">
-                    <h3>☁️アモングアス オンライン 日本語版 / Among Us Online Scratch Remake Japanese Version</h3>
-                    <a href="https://scratch.mit.edu/projects/668123415/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1239803192_480x360.png">
-                    <h3>スクラムス / SCRAMNS</h3>
-                    <a href="https://scratch.mit.edu/projects/1239803192/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/461556734_480x360.png">
-                    <h3>3D跑酷！3Dパルクール　3D Parkour</h3>
-                    <a href="https://scratch.mit.edu/projects/461556734/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1068813565_480x360.png">
-                    <h3>フヒフムさんのオープニング再現！滑らか版</h3>
-                    <a href="https://scratch.mit.edu/projects/1068813565/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/554466917_480x360.png">
-                    <h3>Box Brothers Plus</h3>
-                    <a href="https://scratch.mit.edu/projects/554466917/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-                <div class="card scratch-project">
-                <img src="https://uploads.scratch.mit.edu/get_image/project/1229242091_480x360.png">
-                    <h3>Pixel Parachute</h3>
-                    <a href="https://scratch.mit.edu/projects/1229242091/" class="btn btn-blue" target="_blank">開く</a>
-                </div>
-            </div>
-        </div>
-        
-<h2 style="margin: 40px 0 20px;">🐙 GitHub おすすめ Repository</h2>
-<div class="grid" id="github-repos">
-    <div class="card">
-        <div style="font-size: 2rem; margin-bottom: 10px;"></div>
-        <h3>NextHub</h3>
-        <p style="font-size: 0.8rem; color: var(--text-sub); height: 50px; overflow: hidden;">NextHubのソースコード</p>
-        <div style="margin-top: 10px; font-size: 0.75rem;">
-            <span style="color: var(--scratch-blue);">● HTML</span>
-        </div>
-        <a href="https://github.com/mikancat10/NextHub-MC" class="btn btn-blue" target="_blank">Repoを見る</a>
-    </div>
-    
-    <div class="card">
-        <div style="font-size: 2rem; margin-bottom: 10px;"></div>
-        <h3>MCBrowser</h3>
-        <p style="font-size: 0.8rem; color: var(--text-sub); height: 50px; overflow: hidden;">普通のブラウザ</p>
-        <div style="margin-top: 10px; font-size: 0.75rem;">
-            <span style="color: #f1e05a;">● JavaScript</span>
-        </div>
-        <a href="https://github.com/mikancat10/MCBrowser" class="btn btn-blue" target="_blank">Repoを見る</a>
-    </div>
-</div>
+        </section>
 
-        <div id="tools-page" class="page-content">
-            <h2>🛠 ツール</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>🔢 電卓</h3>
-                    <input type="text" id="calc-display" class="calc-display" readonly value="0">
-                    <div class="calc-grid">
-                        <button class="calc-btn" onclick="pressCalc('7')">7</button>
-                        <button class="calc-btn" onclick="pressCalc('8')">8</button>
-                        <button class="calc-btn" onclick="pressCalc('9')">9</button>
-                        <button class="calc-btn op" onclick="pressCalc('/')">÷</button>
-                        <button class="calc-btn" onclick="pressCalc('4')">4</button>
-                        <button class="calc-btn" onclick="pressCalc('5')">5</button>
-                        <button class="calc-btn" onclick="pressCalc('6')">6</button>
-                        <button class="calc-btn op" onclick="pressCalc('*')">×</button>
-                        <button class="calc-btn" onclick="pressCalc('1')">1</button>
-                        <button class="calc-btn" onclick="pressCalc('2')">2</button>
-                        <button class="calc-btn" onclick="pressCalc('3')">3</button>
-                        <button class="calc-btn op" onclick="pressCalc('-')">-</button>
-                        <button class="calc-btn" onclick="clearCalc()">C</button>
-                        <button class="calc-btn" onclick="pressCalc('0')">0</button>
-                        <button class="calc-btn op" onclick="calculate()">=</button>
-                        <button class="calc-btn op" onclick="pressCalc('+')">+</button>
+        <section id="page-news" class="page-content">
+            <div class="grid" style="grid-template-columns: 2fr 1fr;">
+                <div>
+                    <h3 style="margin-bottom: 20px;">📢 Discord News Feed</h3>
+                    <div id="discord-feed">
+                        <div class="news-item">
+                            <div class="news-meta"><span>#announcements</span> <span>2026/04/21</span></div>
+                            <p style="margin-top:5px;">NextHubの新しいUIを公開しました！ガラスモフィズムを採用し、より直感的に操作できるようになりました。</p>
+                        </div>
+                        <div class="news-item">
+                            <div class="news-meta"><span>#updates</span> <span>2026/04/18</span></div>
+                            <p style="margin-top:5px;">Minecraftサーバー「Benelux」の憲法を更新しました。Wikiを確認してください。</p>
+                        </div>
                     </div>
                 </div>
-                <div class="card">
-                    <h3>📝 メモ</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 8px;">ブラウザに保存されます</p>
-                    <textarea id="memo-area" style="width:100%; height:160px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px; resize: none;"></textarea>
-                    <button onclick="saveMemo()" class="btn btn-blue">保存する</button>
+                
+                <div>
+                    <h3 style="margin-bottom: 20px;">📅 Weekly Weather</h3>
+                    <div class="glass" style="padding: 20px;">
+                        <p id="weather-location">Tokyo, JP</p>
+                        <div id="forecast-list" class="weather-grid">
+                            </div>
+                    </div>
                 </div>
-                <div class="card">
-    <h3>🔐 パスワード生成</h3>
-    <p id="pass-display" style="background:#000; padding:10px; border-radius:5px; margin:10px 0; font-family:monospace; word-break:break-all; border:1px solid #333;">********</p>
-    <input type="range" id="pass-length" min="8" max="32" value="12" style="width:100%;">
-    <p style="font-size:0.8rem; text-align:right;">長さ: <span id="length-val">12</span></p>
-    <button onclick="generatePass()" class="btn btn-blue">生成する</button>
-</div>
-
-<div class="card">
-    <h3>⏱ ポモドーロタイマー</h3>
-    <div id="timer-display" style="font-size: 2.5rem; text-align: center; font-weight: bold; color: var(--scratch-blue); margin: 10px 0;">25:00</div>
-    <div style="display: flex; gap: 5px;">
-        <button onclick="toggleTimer()" id="timer-btn" class="btn btn-blue" style="flex:2;">スタート</button>
-        <button onclick="resetTimer()" class="btn" style="background:#333; color:white; flex:1;">Reset</button>
-    </div>
-</div>
-<div class="card">
-    <h3>📵 超集中モード</h3>
-    <div id="focus-display" style="text-align:center; padding:20px;">
-        <div id="focus-timer" style="font-size:2rem; margin-bottom:10px;">--:--</div>
-        <p id="focus-status" style="font-size:0.8rem; color:var(--text-sub);">目的を設定してロック</p>
-    </div>
-    <div id="focus-controls">
-        <input type="text" id="focus-reason" placeholder="今から何を成し遂げる？" style="width:100%; padding:8px; background:#000; border:1px solid #333; color:#fff; border-radius:5px; margin-bottom:10px;">
-        <button onclick="startFocus()" class="btn btn-blue">集中を開始する</button>
-    </div>
-</div>
-
-<div class="card">
-    <h3>💰 感情家計簿</h3>
-    <div style="display:flex; gap:10px; margin-bottom:10px;">
-        <input type="number" id="spend-amount" placeholder="金額" style="flex:1; background:#000; border:1px solid #333; color:#fff; padding:8px; border-radius:5px;">
-        <select id="spend-emotion" style="background:#000; border:1px solid #333; color:#fff; padding:8px; border-radius:5px;">
-            <option value="😊">最高！</option>
-            <option value="😐">普通</option>
-            <option value="😢">後悔...</option>
-        </select>
-    </div>
-    <button onclick="addSpend()" class="btn btn-blue" style="background:var(--accent-green);">記録する</button>
-    <div id="spend-history" style="margin-top:15px; max-height:100px; overflow-y:auto; font-size:0.85rem;">
-        </div>
-</div>
-<div class="card">
-    <h3>🖼 スクショ解析・分類</h3>
-    <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px;">画像を解析して情報を抽出します</p>
-    
-    <label class="btn btn-blue" style="display: block; background: #333;">
-        画像を選択
-        <input type="file" id="screenshot-input" accept="image/*" style="display:none;">
-    </label>
-
-    <div id="ocr-status" style="font-size: 0.8rem; margin-top:10px; color: var(--scratch-blue);"></div>
-    
-    <div id="analysis-result" style="margin-top:15px; display:none;">
-        <span id="category-tag" style="padding:2px 8px; border-radius:4px; font-size:0.75rem; background:var(--accent-green);">分類中...</span>
-        <textarea id="ocr-text" style="width:100%; height:80px; background:#000; color:#fff; border:1px solid #333; margin-top:10px; padding:5px; font-size:0.8rem; border-radius:5px;"></textarea>
-        <button id="copy-ocr-btn" class="btn" style="width:100%; font-size:0.8rem; margin-top:5px; background:#444; color:white;">テキストをコピー</button>
-    </div>
-</div>
-<div class="card">
-    <h3>📂 コード整理・短縮</h3>
-    <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px;">JavaScript/CSSの整形・軽量化</p>
-    
-    <textarea id="code-input" placeholder="ここにコードを貼り付け..." style="width:100%; height:120px; background:#000; color:#00ff00; border:1px solid #333; padding:10px; font-family:monospace; font-size:0.8rem; border-radius:5px; resize:vertical;"></textarea>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-        <button onclick="processCode('format')" class="btn" style="background:#444; color:white; font-size:0.8rem;">綺麗に整形</button>
-        <button onclick="processCode('minify')" class="btn btn-blue" style="font-size:0.8rem;">限界まで短縮</button>
-    </div>
-</div>
             </div>
-        </div>
+        </section>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-
-    // --- 超集中モード ロジック ---
-let focusInterval = null;
-function startFocus() {
-    const reason = document.getElementById('focus-reason').value;
-    if (!reason) return alert("集中する目的を入力してください！");
-
-    const overlay = document.createElement('div');
-    overlay.id = 'focus-overlay';
-    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif;";
-    
-    overlay.innerHTML = `
-        <h1 style="margin-bottom:20px;">🔥 集中モード発動中</h1>
-        <p style="color:var(--text-sub); margin-bottom:40px;">目的: ${reason}</p>
-        <p style="font-size:0.9rem; margin-bottom:10px;">解除するには以下を正確に入力してください:</p>
-        <p style="font-weight:bold; color:var(--scratch-blue); margin-bottom:10px;">「${reason}を諦めます」</p>
-        <input type="text" id="unlock-input" placeholder="ここに理由を入力..." style="background:transparent; border:none; border-bottom:2px solid #333; color:#fff; text-align:center; font-size:1.2rem; outline:none; margin-bottom:20px;">
-        <button onclick="checkUnlock('${reason}')" class="btn" style="background:#e74c3c; color:white;">ロック解除を試みる</button>
-    `;
-    document.body.appendChild(overlay);
-}
-
-function checkUnlock(reason) {
-    const input = document.getElementById('unlock-input').value;
-    if (input === `${reason}を諦めます`) {
-        document.getElementById('focus-overlay').remove();
-        alert("集中モードを終了しました。お疲れ様でした！");
-    } else {
-        alert("入力が正しくありません。まだ集中しましょう！");
-    }
-}
-
-// --- 感情家計簿 ロジック ---
-function addSpend() {
-    const amt = document.getElementById('spend-amount').value;
-    const emo = document.getElementById('spend-emotion').value;
-    if(!amt) return;
-
-    const history = document.getElementById('spend-history');
-    const item = document.createElement('div');
-    item.style = "display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #222;";
-    item.innerHTML = `<span>${emo} ¥${Number(amt).toLocaleString()}</span> <span style="color:var(--text-sub);">${new Date().toLocaleTimeString()}</span>`;
-    
-    history.prepend(item);
-    document.getElementById('spend-amount').value = "";
-}
         function closeSidebar() { document.getElementById('sidebar-check').checked = false; }
-        
-        // 天気取得
-        async function fetchWeather() {
+
+        // スライダー初期化
+        const swiper = new Swiper('.swiper', {
+            loop: true,
+            speed: 5000,
+            slidesPerView: 'auto',
+            spaceBetween: 20,
+            autoplay: { delay: 0, disableOnInteraction: false },
+            freeMode: { enabled: true, momentum: false },
+        });
+
+        // 天気API (Open-Meteo)
+        async function getWeatherData() {
             try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&current_weather=true');
-                const d = await res.json();
-                document.getElementById('weather-text').innerText = `Tokyo: ${d.current_weather.temperature}°C`;
-            } catch (e) { document.getElementById('weather-text').innerText = "Weather unavailable"; }
-        }
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.76&daily=weathercode,temperature_2m_max,temperature_2m_min&current_weather=true&timezone=Asia%2FTokyo');
+                const data = await res.json();
+                
+                // 現在の気温
+                document.getElementById('quick-weather').innerText = `Tokyo: ${data.current_weather.temperature}°C`;
 
-        // 受付ステータス
-        function updateStatus() {
-            const hr = new Date().getHours();
-            const el = document.getElementById('contact-status');
-            // 17:00 - 22:00の間だけ「受付中」
-            if (hr >= 17 && hr < 22) { 
-                el.innerText = "🟢 受付中"; 
-                el.className = "status-badge status-on"; 
-            } else { 
-                el.innerText = "🔴 時間外 (17:00-22:00)"; 
-                el.className = "status-badge status-off"; 
+                // 週間予報の生成
+                const forecastList = document.getElementById('forecast-list');
+                forecastList.innerHTML = '';
+                for(let i=0; i<5; i++) {
+                    const date = new Date(data.daily.time[i]);
+                    const day = date.toLocaleDateString('ja-JP', {weekday: 'short'});
+                    const div = document.createElement('div');
+                    div.className = 'weather-day';
+                    div.innerHTML = `
+                        <div style="font-size:0.8rem">${day}</div>
+                        <div style="font-weight:bold; color:var(--accent-blue)">${Math.round(data.daily.temperature_2m_max[i])}°</div>
+                        <div style="font-size:0.7rem; color:var(--text-sub)">${Math.round(data.daily.temperature_2m_min[i])}°</div>
+                    `;
+                    forecastList.appendChild(div);
+                }
+            } catch (e) {
+                console.error("Weather load failed", e);
             }
         }
 
-        // スライダー設定（無限ループ・自動再生）
-// スライダー設定（シームレスな等速ループ）
-const swiper = new Swiper('.swiper', {
-    loop: true,
-    speed: 6000, // 6秒かけて1周分移動（お好みの速度に調整してください）
-    slidesPerView: 'auto',
-    spaceBetween: 20,
-    allowTouchMove: true, // 手動での操作も可能
-    autoplay: {
-        delay: 0, // 止まる時間をゼロにする
-        disableOnInteraction: false,
-    },
-    freeMode: {
-        enabled: true,
-        momentum: false,
-    },
-});
-
-        // 電卓ロジック
-        let calcVal = "0";
-        function pressCalc(v) { 
-            if(calcVal === "0" && !isNaN(v)) calcVal = ""; 
-            calcVal += v; 
-            document.getElementById('calc-display').value = calcVal; 
-        }
-        function clearCalc() { 
-            calcVal = "0"; 
-            document.getElementById('calc-display').value = "0"; 
-        }
-        function calculate() { 
-            try { 
-                // 安全な計算のためにevalの代わりにFunctionを使うことも検討できますが、今回はシンプルに
-                calcVal = eval(calcVal).toString(); 
-                document.getElementById('calc-display').value = calcVal; 
-            } catch { 
-                document.getElementById('calc-display').value = "Error";
-                calcVal = "0";
-            } 
-        }
-
-        // メモ機能
-        function saveMemo() { 
-            localStorage.setItem('nh_memo', document.getElementById('memo-area').value); 
-            alert("ブラウザにメモを保存しました！"); 
-        }
-        document.getElementById('memo-area').value = localStorage.getItem('nh_memo') || "";
-
-        // 検索フィルター
-        document.getElementById('js-search').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            // 検索時は自動的にホームタブを表示させる
-            document.getElementById('home-radio').checked = true;
-            document.querySelectorAll('.scratch-project').forEach(p => {
-                const title = p.querySelector('h3').innerText.toLowerCase();
-                p.classList.toggle('search-hide', !title.includes(query));
-            });
-        });
-
-        // いいね機能
-        let likes = parseInt(localStorage.getItem('nh_likes')) || 0;
-        document.getElementById('like-count').innerText = likes;
-        function sendLike() { 
-            likes++; 
-            document.getElementById('like-count').innerText = likes; 
-            localStorage.setItem('nh_likes', likes); 
-        }
-
-        window.onload = () => { 
-            fetchWeather(); 
-            updateStatus(); 
+        window.onload = () => {
+            getWeatherData();
         };
-        // --- パスワード生成ロジック ---
-const passLenInput = document.getElementById('pass-length');
-const passLenVal = document.getElementById('length-val');
-passLenInput.addEventListener('input', () => passLenVal.innerText = passLenInput.value);
 
-function generatePass() {
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-    let retVal = "";
-    for (let i = 0; i < passLenInput.value; ++i) {
-        retVal += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
-    document.getElementById('pass-display').innerText = retVal;
-}
-
-// --- ポモドーロタイマーロジック ---
-let timeLeft = 1500; // 25分
-let timerId = null;
-
-function updateTimerDisplay() {
-    const mins = Math.floor(timeLeft / 60);
-    const secs = timeLeft % 60;
-    document.getElementById('timer-display').innerText = 
-        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-function toggleTimer() {
-    const btn = document.getElementById('timer-btn');
-    if (timerId) {
-        clearInterval(timerId);
-        timerId = null;
-        btn.innerText = "再開";
-    } else {
-        btn.innerText = "停止";
-        timerId = setInterval(() => {
-            timeLeft--;
-            updateTimerDisplay();
-            if (timeLeft <= 0) {
-                clearInterval(timerId);
-                alert("時間です！休憩しましょう。");
-                resetTimer();
-            }
-        }, 1000);
-    }
-}
-
-function resetTimer() {
-    clearInterval(timerId);
-    timerId = null;
-    timeLeft = 1500;
-    updateTimerDisplay();
-    document.getElementById('timer-btn').innerText = "スタート";
-}
-document.getElementById('screenshot-input').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const status = document.getElementById('ocr-status');
-    const resultArea = document.getElementById('analysis-result');
-    const ocrText = document.getElementById('ocr-text');
-    const tag = document.getElementById('category-tag');
-
-    status.innerText = "⌛ 解析中 (これには数秒かかります)...";
-    resultArea.style.display = "none";
+        async function fetchDiscordNews() {
+    const feedContainer = document.getElementById('discord-feed');
+    // GASのデプロイURLに書き換えてください
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwy8wD9wZ8AuICLoqix8C1cvJZYXhkFSOVFZszuDuc6pipkCraEIaAbUD0z6R2mmxWkmA/exec'; 
 
     try {
-        // Tesseract.jsで解析（日本語と英語に対応）
-        const { data: { text } } = await Tesseract.recognize(file, 'jpn+eng');
-        
-        status.innerText = "✅ 解析完了";
-        resultArea.style.display = "block";
-        ocrText.value = text;
+        const response = await fetch(API_URL);
+        const messages = await response.json();
 
-        // キーワードによる自動分類
-        if (text.includes("銀行") || text.includes("口座") || text.includes("振込")) {
-            tag.innerText = "💰 振込・口座情報";
-            tag.style.background = "#e67e22";
-        } else if (text.includes("店") || text.includes("予約") || text.includes("MAP") || text.includes("TEL")) {
-            tag.innerText = "📍 行きたいお店";
-            tag.style.background = "#3498db";
-        } else {
-            tag.innerText = "📝 一般メモ";
-            tag.style.background = "#2ecc71";
+        if (messages.length === 0) {
+            feedContainer.innerHTML = '<p>メッセージがありません</p>';
+            return;
         }
 
-    } catch (err) {
-        console.error(err);
-        status.innerText = "❌ 解析に失敗しました";
-    }
-});
-
-// コピー機能
-document.getElementById('copy-ocr-btn').onclick = () => {
-    const text = document.getElementById('ocr-text');
-    text.select();
-    document.execCommand('copy');
-    alert("テキストをクリップボードにコピーしました！");
-};
-function processCode(mode) {
-    const codeArea = document.getElementById('code-input');
-    let code = codeArea.value;
-
-    if (!code.trim()) return alert("コードを入力してください");
-
-    try {
-        if (mode === 'minify') {
-            // --- 強化版：限界まで短縮 ---
-            code = code
-                .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1') // コメント削除
-                .replace(/\s+([\{\}\(\)\[\]\=\+\-\*\/\;\:\,])\s*/g, '$1') // 記号周りの空白を詰める
-                .replace(/\s+/g, ' ') // 連続する空白を1つに
-                .replace(/;}/g, '}') // 最後のセミコロンを削除
-                .trim();
-            alert("コードを圧縮し、クリップボードにコピーしました！");
-        } else {
-            // --- 強化版：簡易インデント整形 ---
-            let indent = 0;
-            const spaces = "    "; // 1インデント4スペース
-            code = code
-                .replace(/\s*\{\s*/g, " {\n")
-                .replace(/\s*\}\s*/g, "\n}\n")
-                .replace(/\s*;\s*/g, ";\n")
-                .split('\n')
-                .map(line => {
-                    line = line.trim();
-                    if (line.match(/\}/)) indent--;
-                    const currentLine = (indent > 0 ? spaces.repeat(indent) : "") + line;
-                    if (line.match(/\{/)) indent++;
-                    return currentLine;
-                })
-                .join('\n')
-                .replace(/\n\s*\n/g, '\n'); // 空行を詰める
-            alert("コードを整形し、クリップボードにコピーしました！");
-        }
-
-        codeArea.value = code;
-        
-        // 自動コピー機能
-        navigator.clipboard.writeText(code).catch(err => {
-            console.error('Copy failed', err);
-        });
+        feedContainer.innerHTML = messages.map(msg => {
+            const date = new Date(msg.date).toLocaleString('ja-JP', {
+                month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+            });
+            
+            return `
+                <div class="news-item">
+                    <div class="news-meta">
+                        <span style="color:var(--accent-discord)">@${msg.author}</span> 
+                        <span>${date}</span>
+                    </div>
+                    <p style="margin-top:5px; white-space: pre-wrap;">${msg.content}</p>
+                </div>
+            `;
+        }).join('');
 
     } catch (e) {
-        alert("処理中にエラーが発生しました。コードを確認してください。");
+        feedContainer.innerHTML = '<p style="color:#e74c3c;">現在メッセージを取得できません</p>';
     }
 }
     </script>
 </body>
 </html>
-
-
-
-
-
 
 
 
